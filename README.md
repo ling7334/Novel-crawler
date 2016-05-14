@@ -1,3 +1,4 @@
+#扒虫 - Novel crawler
 ![扒虫](/icon.png)
 ===
 这是一个用Python写的小说爬虫软件。
