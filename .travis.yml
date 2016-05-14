@@ -10,4 +10,4 @@ install:
   - pip install -q Django==$DJANGO_VERSION
   - python setup.py -q install
 # command to run tests
-script: nosetests
+script:main.py
