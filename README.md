@@ -1,6 +1,8 @@
 #扒虫 - Novel crawler
 ![扒虫](/icon.png)
 ===
+[![Build Status](https://travis-ci.org/ling7334/Novel-crawler.svg?branch=master)](https://travis-ci.org/ling7334/Novel-crawler)
+
 这是一个用Python写的小说爬虫软件。
 
 十分欢迎大能来指导，帮助完善软件。
@@ -20,3 +22,6 @@
 
 ## 下载
 [__GitHub__](https://github.com/ling7334/Novel-crawler)
+
+## License
+[MIT](LICENSE)
