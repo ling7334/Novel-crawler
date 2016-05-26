@@ -8,5 +8,6 @@ python:
   - "nightly" # currently points to 3.6-dev
 # command to install dependencies
 #install: "pip install -r requirements.txt"
+pip install beautifulsoup4
 # command to run tests
 script: python main.py

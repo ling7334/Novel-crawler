@@ -61,7 +61,9 @@ target/
 #Ipython Notebook
 .ipynb_checkpoints
 
+#VS code
+/.vscode/
+
 #program
 /novel/*
-/__pycache__/*
-/.vscode/
+/__snippet__/*
