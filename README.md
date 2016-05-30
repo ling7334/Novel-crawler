@@ -21,7 +21,7 @@
 4.  用Typescript重写软件
 
 ## 下载
-[__GitHub__](https://github.com/ling7334/Novel-crawler)
+[__GitHub__](https://codeload.github.com/ling7334/Novel-crawler/zip/master)
 
 ## License
 [MIT](LICENSE)
