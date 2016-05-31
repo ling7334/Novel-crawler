@@ -213,6 +213,7 @@ def escape(txt):
     txt = txt.replace('"','&quot;')
     txt = txt.replace('\'','&apos;')
     txt = txt.replace('\r','<br />')
+    txt = txt.replace('\n','<br />')
     return txt
 
 def Load_Novel_List():
@@ -262,39 +263,10 @@ def Get_chapters(id,chapter_link,index,end=-1):
         fo.close()
         return True
 
-def Load_Chapter(novelname,index=None,chaptername=None,end=-1):
-    try:
-        noveldata = Load_Novel_Data(novelname)
-    except:
-        print('小说信息载入错误！')
-        return None
-    try:
-        chapter_name, chapter_link = Load_Chapter_List(novelname)
-    except:
-        print('章节目录载入错误！')
-        return None
-    config = configparser.ConfigParser()
-    config.read('./config.ini')
-    opts = config[noveldata['id']]
-    if not index == None:
-        filename = './novel/' + novelname + repr(index) + '.txt'
-    elif not chaptername == None:
-        index = chapter_name.index(chaptername)
-        filename = './novel/' + novelname + repr(index) + '.txt'
+def Load_Chapter(novelname,index):
+    filename = './novel/' + novelname + '/' + repr(index) + '.txt'
+    if os.path.isfile(filename):
+        text = open(filename,encoding='utf8').read()
     else:
-        print('请指定章节！')
-        return None
-    try:
-        fo = open(filename,'r')
-        text = fo.read()
-        fo.close()
-    except:
-        data=urllib.request.urlopen(chapter_link[index]).read()             #读取章节内容
-        soup = BeautifulSoup(data,"html.parser")                            #构建BS数据
-        text = eval('soup.'+ opts['text'])
-        fo = open(filename, "wb")
-        fo.write(text.encode('utf8'))
-        fo.close()
-        Thread.start_new_thread(Get_chapters, (noveldata['id'],index+1,end))
-        pass
+        return "未找到章节"
     return text

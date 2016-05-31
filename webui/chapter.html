@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+  <title>#novelname - #chaptername</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap theme -->
+  <!--link href="./css/bootstrap-theme.min.css" rel="stylesheet"-->
+
+  <!-- Custom styles for this template -->
+  <link href="/css/custom_theme.css" rel="stylesheet">
+
+  <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+  <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+  <!--script src="./js/ie-emulation-modes-warning.js"></script-->
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body role="document">
+
+  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">扒虫</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a href="/">书柜<span class="glyphicon glyphicon-book"></span></a></li>
+          <li><a href="/serch/">搜书<span class="glyphicon glyphicon-search"></span></a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/config/"><span class="glyphicon glyphicon-cog"></span></a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" id="resText">
+    <ul class="breadcrumb">
+      <li><a href="#NovelLink">#novelname</a></li>
+      <li class="active">#chaptername</li>
+    </ul>
+
+    <div class="well well-lg center-block">
+      <h1 align="center">#chaptername</h1>
+      <p id="text">#text</p>
+      #pager
+<!--pager
+      <ul class="pager">
+        <li class="previous"><a href="#previous">&larr; 上一章</a></li>
+        <li class="next"><a href="#next">下一章 &rarr;</a></li>
+      </ul>
+    </div>
+pager-->
+  </div>
+  <div class="footer">
+    <hr>
+    <p align="center">免责声明:本软件内容皆来源于网络，软件作者不负任何责任。<a href="https://github.com/ling7334/Novel-crawler">@ling7334</a></p>
+    <div class="progress progress-striped active center-block" style="width:10%;">
+      <div class="progress-bar" style="width: 100%;"></div>
+    </div>
+  </div>
+  <!-- Placed at the end of the document so the pages load faster -->
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  #script
+<!--continuously
+  <script type="text/javascript">
+    $(function(){
+      $(window).bind('scroll',function(){show()});
+      $(".footer").hide();
+      function show()
+      {
+
+          if($(window).scrollTop()+$(window).height()>=$(document).height())
+          {
+              ajaxReadText();
+          }
+      }
+      
+      function ajaxReadText()
+      {
+
+          var html="";
+          $.ajax({
+                type:'get',
+                dataType:'jsonp',
+                url:'http://api.flickr.com/services/feeds/photos_public.gne?tags=car&tagmode=any&format=json&jsoncallback=?',
+                beforeSend:function(){$(".footer").show()},
+                success:function(data)
+                {
+                              $.each(data.items,function(i,item)
+                              {
+                                    
+                                    html+='<div class="well well-lg center-block">';
+                                    html+='<h1 align="center">'+item.title+'</h1>';
+                                    html+='<p>'+item.description+"</p>";
+                                    html+='<div>'+item.tags+'</div>';
+                                    html+='</div>';
+
+                              });//.each
+                              $("#resText").append($(html));
+                },
+                complete:function(){$(".footer").hide()}
+                //error:
+          });//.ajax
+      }
+    })
+  </script>
+continuously-->
+<!--pager
+  <SCRIPT type="text/javascript">
+  $(".progress").hide();
+  document.onkeydown = pageEvent;
+  var prevpage="#previous";
+  var nextpage="#next";
+  function pageEvent(evt){
+    evt = evt ||window.event; 
+    var key=evt.which||evt.keyCode;
+    if (key == 37) location = prevpage;
+    if (key == 39) location = nextpage;
+  }; 
+  </SCRIPT>
+pager-->
+  <!--script src="./js/docs.min.js"></script-->
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <!--script src="./js/ie10-viewport-bug-workaround.js"></script-->
+</body>
+
+</html>

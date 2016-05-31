@@ -1,0 +1,13 @@
+body {
+  padding-top: 70px;
+  padding-bottom: 30px;
+}
+
+.glyphicon-cog{
+  padding-left: 10px;
+  padding-right: 20px;
+}
+
+#text{
+  font-size: 200%;
+}
