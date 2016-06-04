@@ -23,11 +23,13 @@
 ## 依赖
 
 Python
+
 1. Python 3.5.1
 2. BeautifulSoup 4.4 0
 3. Flask 0.11
 
 HTML
+
 1. HTML 5
 2. Ajax
 3. Bootstrap 3.3.6
