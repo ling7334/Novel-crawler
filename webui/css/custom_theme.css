@@ -1,13 +1,25 @@
 body {
+  position: relative;
   padding-top: 70px;
   padding-bottom: 30px;
 }
 
 .glyphicon-cog{
   padding-left: 10px;
-  padding-right: 20px;
+  padding-right: 10px;
 }
 
 #text{
   font-size: 200%;
+  font: bold;
+  color: #000000;
+}
+
+#configtab{
+  width: 99%;
+}
+
+ul.nav-pills.affix{
+  top: 70px;
+  width: 15%;
 }

@@ -9,6 +9,7 @@ script_continuously='''<script type="text/javascript">
     $(function(){
       $(window).bind('scroll',function(){show()});
       $(".footer").hide();
+      var chapter = #chapter;
       function show()
       {
 
@@ -25,24 +26,18 @@ script_continuously='''<script type="text/javascript">
           $.ajax({
                 type:'get',
                 dataType:'jsonp',
-                url:'http://api.flickr.com/services/feeds/photos_public.gne?tags=car&tagmode=any&format=json&jsoncallback=?',
+                url:'/json/#novelname/' + chapter,
                 beforeSend:function(){$(".footer").show()},
-                success:function(data)
-                {
-                              $.each(data.items,function(i,item)
-                              {
-                                    
-                                    html+='<div class="well well-lg center-block">';
-                                    html+='<h1 align="center">'+item.title+'</h1>';
-                                    html+='<p>'+item.description+"</p>";
-                                    html+='<div>'+item.tags+'</div>';
-                                    html+='</div>';
-
-                              });//.each
-                              $("#resText").append($(html));
-                },
-                complete:function(){$(".footer").hide()}
-                //error:
+                complete:function(data){
+                  obj = JSON.parse(data.responseText)
+                  html+='<div class="well well-lg center-block">';
+                  html+='<h1 align="center">'+obj.title+'</h1>';
+                  html+='<p id="text">'+obj.description+'</p>';
+                  html+='</div>';
+                  $("#resText").append($(html));
+                  chapter= chapter + 1
+                  $(".footer").hide()}
+                //error:function(){$(".progress").hide();}
           });//.ajax
       }
     })
@@ -53,10 +48,12 @@ script_pager='''<SCRIPT type="text/javascript">
   document.onkeydown = pageEvent;
   var prevpage="#previous";
   var nextpage="#next";
+  var novelpage="#novelpage";
   function pageEvent(evt){
     evt = evt ||window.event; 
     var key=evt.which||evt.keyCode;
     if (key == 37) location = prevpage;
     if (key == 39) location = nextpage;
+    if (key == 13) location = novelpage;
   }; 
   </SCRIPT>'''

@@ -18,7 +18,19 @@
 1.  完成小说搜索算法
 2.  完成简单的基于浏览器的阅读框架
 3.  充实搜索库
-4.  用Typescript重写软件
+
+---
+## 依赖
+
+Python
+1. Python 3.5.1
+2. BeautifulSoup 4.4 0
+3. Flask 0.11
+
+HTML
+1. HTML 5
+2. Ajax
+3. Bootstrap 3.3.6
 
 ## 下载
 [__GitHub__](https://codeload.github.com/ling7334/Novel-crawler/zip/master)

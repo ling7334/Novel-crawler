@@ -63,7 +63,6 @@ class RetrieveNovel:
         
     def Get_novel_info(self,url):
         """根据之前的搜索内容，获取小说信息
-        id：指定网站的标签
         """
         #url = self.link[self.identity.index(id)]
         try:
@@ -126,13 +125,14 @@ class RetrieveNovel:
             
         try:
             string = 'soup.'+self.opts['image']
-            string = eval(string)
-            if not string.startswith('http'):
-                string = self.noveldata['homepage'] + string
-            self.noveldata['image'] = eval(string)
+            
         except:
             pass
-            
+        string = eval(string)
+        if not string.startswith('http'):
+            string = self.noveldata['homepage'] + string
+        self.noveldata['image'] = string
+        
         #--------------------------------------------------创建小说文件夹
         filename = './novel/' + self.noveldata['title'] + '/'
         if not os.path.exists(filename):
@@ -165,6 +165,7 @@ class RetrieveNovel:
         string = 'soup.'+self.opts['chapter_list']
         for chapter_list in eval(string):
             string = eval(self.opts['chapter_name'])
+            string = str(string)
             self.chapter_name.append(string)
             url = eval(self.opts['chapter_link'])
             if  not url.startswith('http'):
@@ -182,7 +183,7 @@ class RetrieveNovel:
         filename = './novel/list.dat'
         novel_list = list()
         for item in os.listdir('./novel/'): 
-            if os.path.isfile('./novel/'+item+'info.dat'): 
+            if os.path.isfile('./novel/'+item+'/info.dat'): 
                 novel_list.append(item)
         pickle.dump(novel_list, open(filename, "wb"))
 
@@ -204,7 +205,7 @@ class RetrieveNovel:
             fo.close()
         return True
 
-def escape(txt):
+def escape(txt,space):
     '''将txt文本中的空格、&、<、>、（"）、（'）转化成对应的的字符实体，以方便在html上显示'''
     txt = txt.replace('&','&amp;')
     txt = txt.replace(' ','&nbsp;')
@@ -212,8 +213,8 @@ def escape(txt):
     txt = txt.replace('>','&gt;')
     txt = txt.replace('"','&quot;')
     txt = txt.replace('\'','&apos;')
-    txt = txt.replace('\r','<br />')
-    txt = txt.replace('\n','<br />')
+    txt = txt.replace('\r',space*'<br />')
+    txt = txt.replace('\n',space*'<br />')
     return txt
 
 def Load_Novel_List():
@@ -237,12 +238,13 @@ def Load_Novel_Data(novelname):
         return None
         
 def Load_Chapter_List(novelname):
+    chapter_name = list()
     filename = './novel/' + novelname + '/chapter_name.dat'
-    filename1 = './novel/' + novelname + '/chapter_link.dat'
+    #filename1 = './novel/' + novelname + '/chapter_link.dat'
     try:
         chapter_name = pickle.load(open(filename, "rb"))
-        chapter_link = pickle.load(open(filename, "rb"))
-        return chapter_name, chapter_link
+        #chapter_link = pickle.load(open(filename1, "rb"))
+        return chapter_name#, chapter_link
     except:
         print("未找到章节列表")
         return None
