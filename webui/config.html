@@ -27,7 +27,7 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
           <li><a href="/">书柜<span class="glyphicon glyphicon-book"></span></a></li>
-          <li><a href="/search/">搜书<span class="glyphicon glyphicon-search"></span></a></li>
+          <li><a href="/search">搜书<span class="glyphicon glyphicon-search"></span></a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li class="active"><a href="/config/"><span class="glyphicon glyphicon-cog"></span></a></li>
@@ -50,7 +50,9 @@
   <!-- Tab panes -->
   <div class="tab-content col-md-10">
     <div role="tabpanel" class="tab-pane active" id="home">
-      施工中
+      施工中<br />
+      <button id="okkey" class="btn btn-default" type="button" onClick="okkey()">ok</button>
+      <button id="fkey" class="btn btn-default" type="button" onClick="fkey()">fail</button>
     </div>
     <div role="tabpanel" class="tab-pane" id="profile">施工中2</div>
     <div role="tabpanel" class="tab-pane" id="messages">施工中3</div>
@@ -58,13 +60,34 @@
   </div>
 
 </div>
-
+<div id = "aldiv" style="position: fixed; bottom: 80px; right: 30px; opacity: 1;">
+</div>
 
   <!-- Placed at the end of the document so the pages load faster -->
   <!-- Bootstrap core JavaScript
     ================================================== -->
   <script src="/js/jquery.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
+  <script>
+    function okkey(){
+        $("#aldiv")
+      .prepend('<div class="alert alert-dismissible alert-success"><button class="close" type="button" data-dismiss="alert">&times;</button><strong>成功！</strong>清空缓存以更新。</div>')
+      .children(':first')
+      .delay(5000)
+      .fadeOut(1000);
+      $("#okkey").removeClass('btn-default');
+      $("#okkey").addClass('btn-success');
+    }
+    function fkey(){
+      $("#aldiv")
+      .prepend('<div class="alert alert-dismissible alert-danger"><button class="close" type="button" data-dismiss="alert">&times;</button><strong>失败！</strong>哪里出错了。</div>')
+      .children(':first')
+      .delay(5000)
+      .fadeOut(1000);
+      $("#fkey").removeClass('btn-default');
+      $("#fkey").addClass('btn-danger');
+    }
+  </script>
 </body>
 
 </html>

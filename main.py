@@ -13,7 +13,7 @@ import configparser
 from bs4 import BeautifulSoup
 
 
-novelname = '12亿武装女仆的皇帝'#input('请输入小说名：')
+novelname = '奥术神座'#input('请输入小说名：')#input函数在VSCode中支持不好
 
 identity = list()
 link = list()

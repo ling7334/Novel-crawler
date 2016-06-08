@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>#novelname</title>
+  <title>搜书</title>
 
   <!-- Bootstrap core CSS -->
   <link href="/css/bootstrap.min.css" rel="stylesheet">
@@ -27,7 +27,7 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
           <li><a href="/">书柜<span class="glyphicon glyphicon-book"></span></a></li>
-          <li><a href="/search/">搜书<span class="glyphicon glyphicon-search"></span></a></li>
+          <li class="active"><a href="/search">搜书<span class="glyphicon glyphicon-search"></span></a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li><a href="/config/"><span class="glyphicon glyphicon-cog"></span></a></li>
@@ -37,12 +37,24 @@
   </nav>
 
 <div class="container">
-    
+  <div class="row">
+    <div class="col-md-4"></div>
+    <div class="input-group input-group-md col-md-4">
+      <input type="text" class="form-control" placeholder="小说名" aria-describedby="basic-addon2" id="search-novel">
+      <span class="input-group-btn"><button class="btn btn-default" type="button" onClick="search()">搜索</button></span>
+    </div>
+    <div class="col-md-4"></div>
+  </div>
+  <div class="list-group">
+  </div>
 </div>
-  
+
   <div class="footer">
     <hr>
     <p align="center">免责声明:本软件内容皆来源于网络，软件作者不负任何责任。<a href="https://github.com/ling7334/Novel-crawler">@ling7334</a></p>
+    <div class="progress progress-striped active center-block" style="width:10%;">
+      <div class="progress-bar" style="width: 100%;"></div>
+    </div>
   </div>
 
   <!-- Placed at the end of the document so the pages load faster -->
@@ -50,7 +62,8 @@
     ================================================== -->
   <script src="/js/jquery.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
-
+  <script src="/js/retrieve.js"></script>
+  <script src="/js/search.js"></script>
 </body>
 
 </html>

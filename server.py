@@ -29,27 +29,19 @@ def index():
         except:
             next
         try:
-            newest = noveldata['latest']
-        except:
-            pass
-        try:
-            lastread = noveldata['lastread']
-        except:
-            pass
-        try:
             image = noveldata['image']
         except:
-            image = '/defimg'
+            image = '/img/default.jpg'
         content += '<div class="col-md-5 well row">'
         content += '<img class="col-md-4" width="120" height="150" style="max-width: 120px; max-height: 150px;" alt="" src="' + image + '" border="0">'
         content += '<div class="col-md-8">'
         content += '<p><a href="/'+ noveldata['title'] +'/"><strong>' + noveldata['title'] + '</strong></a></p>'
         try:
-            content += '<p  class="text-primary">最新章节：<a href="/'+ noveldata['title'] +'-1">' + newest + '</a></p>'
+            content += '<p  class="text-primary">最新章节：<a href="/'+ noveldata['title'] +'-1">' + noveldata['latest'] + '</a></p>'
         except:
             content += '<p  class="text-primary">最新章节：</p>'
         try:
-            content += '<p  class="text-primary">最后阅读：<a href="/'+ noveldata['title'] +'/'+repr(lastread-1)+'/">' + chapter_name[lastread] + '</a></p></div></div>'
+            content += '<p  class="text-primary">最后阅读：<a href="/'+ noveldata['title'] +'/'+repr(noveldata['lastread'])+'/">' + chapter_name[noveldata['lastread']] + '</a></p></div></div>'
         except:
             content += '<p  class="text-primary">最后阅读：</p></div></div>'
         if novellist.index(novelname) %2==0:
@@ -58,18 +50,29 @@ def index():
     return html
 
 @app.route('/json/<novelname>/<int:chapter>')
-def my_json(novelname,chapter):
+def chapter_json(novelname,chapter):
+    noveldata ={}
     novelname = urllib.parse.unquote(novelname)
     filename = './novel/' + novelname + '/chapter_name.dat'
     chapter_name = pickle.load(open(filename, "rb"))
+    filename = './novel/' + novelname + '/info.dat'
+    noveldata = pickle.load(open(filename, "rb"))
     chaptername=chapter_name[chapter]
-    text = usrlib.Load_Chapter(novelname,chapter)
+    text = usrlib.Get_Chapter(novelname,chapter)
     text = usrlib.escape(text,2)
-    rt = {'title': chaptername,'description': text}
+    rt = {"title": chaptername, "description": text}
+    try:
+        lastread = noveldata['lastread']
+    except:
+        lastread = -1
+    if chapter >= lastread:
+        noveldata['lastread'] = chapter
+        filename = './novel/' + novelname + '/info.dat'
+        pickle.dump(noveldata, open(filename, "wb"))
     return jsonify(rt)
 
-@app.route('/<novelname>')
 @app.route('/<novelname>/')
+@app.route('/<novelname>')
 def Novel(novelname):
     chapterlist = ''
     noveldata = {}
@@ -93,7 +96,7 @@ def Novel(novelname):
     try:
         string = noveldata['image']
     except:
-        string = '/defimg'
+        string = '/img/default.jpg'
     html = html.replace('#image',string)
     try:
         string = noveldata['description']
@@ -135,16 +138,16 @@ def Novel(novelname):
     i=0
     for item in chapter_name:
         if i == lastread:
-            chapterlist += '<a class="list-group-item col-lg-4" href="' + '/' + novelname + '/' + repr(i) + '">' + item + '<span class="badge">书签</span></a>'
+            chapterlist += '<a class="list-group-item col-lg-4" id="chapterlink" href="' + '/' + novelname + '/' + repr(i) + '">' + item + '<span class="badge">书签</span></a>'
         else:
-            chapterlist += '<a class="list-group-item col-lg-4" href="' + '/' + novelname + '/' + repr(i) + '">' + item + '</a>'
+            chapterlist += '<a class="list-group-item col-lg-4" id="chapterlist" href="' + '/' + novelname + '/' + repr(i) + '">' + item + '</a>'
         i=i+1
     html = html.replace('#novelname',novelname)
     html = html.replace('#chapterlist',chapterlist)
     return html
 
+@app.route('/<novelname>/<int:chapter>/')
 @app.route('/<novelname>/<int:chapter>')
-@app.route('/<novelname>/<int:chapter>/')      
 def Chpater(novelname,chapter=None):
     continuously = 1
     noveldata = {}
@@ -158,24 +161,17 @@ def Chpater(novelname,chapter=None):
     chapter_name = pickle.load(open(filename, "rb"))
     if chapter == -1:
         chapter= len(chapter_name)-1
-    if (chapter != None and chapter >= 0 and chapter <= len(chapter_name)-1):
+    if (chapter >= 0 and chapter <= len(chapter_name)-1):
         chaptername=chapter_name[chapter]
-        text = usrlib.Load_Chapter(novelname,chapter)
+        text = usrlib.Get_Chapter(novelname,chapter)
         text = usrlib.escape(text,2)
         html = open('./webui/chapter.html',encoding='utf8').read()
         html = html.replace('#novelname',novelname)
         html = html.replace('#chaptername',chaptername)
         html = html.replace('#NovelLink','/'+novelname+'/')
         html = html.replace('#text',text)
-        if continuously == 1:
-            html = html.replace('#pager','')
-            html = html.replace('#script',const.script_continuously)
-            html = html.replace('#novelname',novelname)
-            html = html.replace('#chapter',repr(chapter+1))
-        else:
-            html = html.replace('#pager',const.pager)
-            html = html.replace('#script',const.script_pager)
-        #html = html.replace('#novelpage','/' + novelname + '/')
+        html = html.replace('#chapter',repr(chapter))
+        html = html.replace('#novelpage','/' + novelname + '/')
         if chapter<len(chapter_name)-1:
             html = html.replace('#next','/' + novelname + '/' + repr(chapter+1))
         else:
@@ -184,6 +180,12 @@ def Chpater(novelname,chapter=None):
             html = html.replace('#previous','/' + novelname + '/' + repr(chapter-1))
         else:
             html = html.replace('#previous','/' + novelname + '/')
+        if continuously == 1:
+            html = html.replace('#script','/js/continuously.js')
+            html = html.replace('#novelname',novelname)
+            html = html.replace('#chapter',repr(chapter+1))
+        else:
+            html = html.replace('#script','/js/pager.js')
         try:
             lastread = noveldata['lastread']
         except:
@@ -196,11 +198,40 @@ def Chpater(novelname,chapter=None):
     else:
         return Novel(novelname)
 
-@app.route('/search/')
-@app.route('/search')
+#@app.route('/search/', methods=['GET', 'POST'])
+@app.route('/search', methods=['GET', 'POST'])
 def Search():
-    html = open('./webui/search.html',encoding='utf8').read()
-    return html
+    if request.method == 'POST':
+        if not 'id' in request.form:
+            rt = {"id" : usrlib.Get_ID() }
+            return jsonify(rt)
+        #print(request.form['novelname'],request.form['id'])
+        url = usrlib.Search_By_ID(request.form['novelname'],request.form['id'])
+        if url == -1:
+            return '-1'
+        noveldata = usrlib.Get_Novel_Info(url,request.form['id'])
+        if noveldata == -1:
+            return '-1'
+        return jsonify(noveldata)
+    else:
+        html = open('./webui/search.html',encoding='utf8').read()
+        return html
+
+@app.route('/retrieve', methods=['POST'])
+def Retrieve():
+    if not 'id' in request.form:
+        return '-1'
+    if  not 'novelname' in request.form:
+        return '-2'
+    url = usrlib.Search_By_ID(request.form['novelname'],request.form['id'])
+    if url == -1:
+        return '-3'
+    noveldata = usrlib.Get_Novel_Info(url,request.form['id'])
+    if noveldata == -1:
+        return '-4'
+    if not usrlib.Save_Content(noveldata):
+        return '-5'
+    return '0'
 
 @app.route('/config', methods=['GET', 'POST'])
 @app.route('/config/', methods=['GET', 'POST'])
@@ -220,9 +251,9 @@ def send_css(path):
 @app.route('/fonts/<path:path>')
 def send_fonts(path):
     return send_from_directory('./webui/fonts', path)
-@app.route('/defimg')
-def send_img():
-    return send_from_directory('./','icon.png')
+@app.route('/img/<path:path>')
+def send_img(path):
+    return send_from_directory('./webui/img', path)
     
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)

@@ -5,7 +5,7 @@
 
 这是一个用Python写的小说爬虫软件。
 
-十分欢迎大能来指导，帮助完善软件。
+欢迎各位指正，帮助完善软件。[__提出问题反馈__](https://github.com/ling7334/Novel-crawler/issues/new)
 
 ---
 ## 写这个软件的原因
@@ -37,5 +37,5 @@ HTML
 ## 下载
 [__GitHub__](https://codeload.github.com/ling7334/Novel-crawler/zip/master)
 
-## License
+## 许可证
 [MIT](LICENSE)

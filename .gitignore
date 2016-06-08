@@ -64,6 +64,9 @@ target/
 #VS code
 /.vscode/
 
+#ESLint
+/jsconfig.json
+
 #program
 /novel/*
 /__snippet__/*
