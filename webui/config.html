@@ -10,13 +10,14 @@
 
   <!-- Bootstrap core CSS -->
   <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/bootstrap-switch.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
   <link href="/css/custom_theme.css" rel="stylesheet">
 
 </head>
 
-<body role="document" data-spy="scroll" data-target="#myScrollspy">
+<body role="document">
 
   <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid">
@@ -30,64 +31,106 @@
           <li><a href="/search">搜书<span class="glyphicon glyphicon-search"></span></a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li class="active"><a href="/config/"><span class="glyphicon glyphicon-cog"></span></a></li>
+          <li class="active"><a href="/config"><span class="glyphicon glyphicon-cog"></span></a></li>
         </ul>
       </div>
     </div>
   </nav>
 
 
-<div class="row" id="configtab">
-  <div class="col-md-2" id="myScrollspy">
-    <!-- Nav tabs -->
-    <ul class="nav nav-pills nav-stacked" role="tablist" data-spy="affix" data-offset-top="75">
-      <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home<i class="glyphicon glyphicon-menu-right pull-right"></i></a></li>
-      <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile<i class="glyphicon glyphicon-menu-right pull-right"></i></a></li>
-      <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages<i class="glyphicon glyphicon-menu-right pull-right"></i></a></li>
-      <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings<i class="glyphicon glyphicon-menu-right pull-right"></i></a></li>
-    </ul>
-  </div>
-  <!-- Tab panes -->
-  <div class="tab-content col-md-10">
-    <div role="tabpanel" class="tab-pane active" id="home">
-      施工中<br />
-      <button id="okkey" class="btn btn-default" type="button" onClick="okkey()">ok</button>
-      <button id="fkey" class="btn btn-default" type="button" onClick="fkey()">fail</button>
+  <div class="row" id="configtab" style="width: 99%;">
+    <div class="col-md-2" id="myScrollspy">
+      <!-- Nav tabs -->
+      <ul class="nav nav-pills nav-stacked" role="tablist" style="position: fixed; top: 70px; left: 10px; opacity: 1; width: 15%;">
+        <li role="presentation" class="active"><a href="#reading" aria-controls="reading" role="tab" data-toggle="tab">阅读设置<i class="glyphicon glyphicon-menu-right pull-right"></i></a></li>
+        <li role="presentation"><a href="#search" aria-controls="search" role="tab" data-toggle="tab">搜书设置<i class="glyphicon glyphicon-menu-right pull-right"></i></a></li>
+        <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages<i class="glyphicon glyphicon-menu-right pull-right"></i></a></li>
+        <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings<i class="glyphicon glyphicon-menu-right pull-right"></i></a></li>
+      </ul>
     </div>
-    <div role="tabpanel" class="tab-pane" id="profile">施工中2</div>
-    <div role="tabpanel" class="tab-pane" id="messages">施工中3</div>
-    <div role="tabpanel" class="tab-pane" id="settings">施工中4</div> 
-  </div>
+    <!-- Tab panes -->
+    <div class="tab-content col-md-10 pull-left" style="width:50%">
+      <div role="tabpanel" class="tab-pane active" id="reading">
 
-</div>
-<div id = "aldiv" style="position: fixed; bottom: 80px; right: 30px; opacity: 1;">
-</div>
+        <form class="form-horizontal">
+          <fieldset>
+            <legend>阅读设置</legend>
 
-  <!-- Placed at the end of the document so the pages load faster -->
-  <!-- Bootstrap core JavaScript
+            <div class="form-group">
+              <label class="col-lg-2 control-label" for="continuously">连续阅读</label>
+              <div class="col-lg-10">
+                <input class="form-control" id="continuously" type="checkbox">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-2 control-label" for="bold">粗体字</label>
+              <div class="col-lg-10">
+                <input class="form-control" id="bold" type="checkbox">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-2 control-label" for="bkcolor">阅读背景</label>
+              <div class="input-group col-lg-10" style="width:150px">
+                <span id="bkcolor-display" class="input-group-addon"></span>
+                <input class="form-control" id="bkcolor" type="text">
+              </div>
+              <div class="col-lg-2"></div>
+              <span class="help-block col-lg-10">背景颜色支持颜色名称的颜色（比如 red），十六进制值的颜色（比如 #ff0000）， rgb 代码的颜色（比如 rgb(255,0,0)）。</span>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-lg-2 control-label" for="fontcolor">字体颜色</label>
+              <div class="input-group col-lg-10" style="width:150px">
+                <span id="fontcolor-display" class="input-group-addon"></span>
+                <input class="form-control" id="fontcolor" type="text">
+              </div>
+              <div class="col-lg-2"></div>
+              <span class="help-block col-lg-10">字体颜色支持颜色名称的颜色（比如 red），十六进制值的颜色（比如 #ff0000）， rgb 代码的颜色（比如 rgb(255,0,0)）。</span>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-2 control-label" for="fontsize">字体大小</label>
+              <div class="input-group col-lg-10" style="width:150px">
+                <input class="form-control" id="fontsize" type="text">
+              </div>
+              <div class="col-lg-2"></div>
+              <span class="help-block col-lg-10">字体大小支持像素（如 15px）。</span>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-2 control-label" for="fontfamily">字体</label>
+              <div class="input-group col-lg-10" style="width:150px">
+                <input class="form-control" id="fontfamily" type="text">
+              </div>
+            </div>
+
+          </fieldset>
+        </form>
+
+        </div>
+        <div role="tabpanel" class="tab-pane" id="search">施工中2</div>
+        <div role="tabpanel" class="tab-pane" id="messages">施工中3</div>
+        <div role="tabpanel" class="tab-pane" id="settings">施工中4</div>
+      </div>
+
+    </div>
+
+    <div id="Change" style="position: fixed; bottom: 10px; right: 30px; opacity: 1;">
+      <button class="btn btn-default btn-lg" type="reset" id="cancel" onClick="reset()">重置</button>
+      <button class="btn btn-primary btn-lg" type="submit" id="submit" onClick="save()">提交</button>
+    </div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- Bootstrap core JavaScript
     ================================================== -->
-  <script src="/js/jquery.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
-  <script>
-    function okkey(){
-        $("#aldiv")
-      .prepend('<div class="alert alert-dismissible alert-success"><button class="close" type="button" data-dismiss="alert">&times;</button><strong>成功！</strong>清空缓存以更新。</div>')
-      .children(':first')
-      .delay(5000)
-      .fadeOut(1000);
-      $("#okkey").removeClass('btn-default');
-      $("#okkey").addClass('btn-success');
-    }
-    function fkey(){
-      $("#aldiv")
-      .prepend('<div class="alert alert-dismissible alert-danger"><button class="close" type="button" data-dismiss="alert">&times;</button><strong>失败！</strong>哪里出错了。</div>')
-      .children(':first')
-      .delay(5000)
-      .fadeOut(1000);
-      $("#fkey").removeClass('btn-default');
-      $("#fkey").addClass('btn-danger');
-    }
-  </script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap-switch.min.js"></script>
+    <script src="/js/config.js"></script>
+    <div id="aldiv" style="position: fixed; bottom: 80px; right: 30px; opacity: 1;"></div>
+
 </body>
 
 </html>

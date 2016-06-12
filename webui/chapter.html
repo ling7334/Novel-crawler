@@ -30,7 +30,7 @@
           <li><a href="/search">搜书<span class="glyphicon glyphicon-search"></span></a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="/config/"><span class="glyphicon glyphicon-cog"></span></a></li>
+          <li><a href="/config"><span class="glyphicon glyphicon-cog"></span></a></li>
         </ul>
       </div>
     </div>
@@ -42,9 +42,9 @@
       <li class="active">#chaptername</li>
     </ul>
 
-    <div class="well well-lg center-block" id="readchapter" style="">
+    <div class="well well-lg center-block" id="text">
       <h1 align="center">#chaptername</h1>
-      <p id="text">#text</p>
+      <p>#text</p>
       <ul class="pager">
         <li class="previous"><a href="#previous">&larr; 上一章</a></li>
         <li class="next"><a href="#next">下一章 &rarr;</a></li>
@@ -58,10 +58,6 @@
       <div class="progress-bar" style="width: 100%;"></div>
     </div>
   </div>
-  
-<div id="topcontrol" title="返回顶部" class="bg-primary" style="font-size: 30px; justify-content:center; align-items:center; display:-webkit-flex; position: fixed; bottom: 80px; right: 30px; opacity: 1; cursor: pointer; width:50px; height:50px; border:0;">
-  <span class="glyphicon glyphicon-chevron-up"></span>
-</div>
 
   <!-- Placed at the end of the document so the pages load faster -->
   <!-- Bootstrap core JavaScript
@@ -71,9 +67,9 @@
   <script>
     var novelname = "#novelname";
     var nextchapter = #chapter + 1;
-    var prevpage="#previous";
-    var nextpage="#next";
-    var novelpage="#novelpage";
+    var prevpage = "#previous";
+    var nextpage = "#next";
+    var novelpage = "#novelpage";
   </script>
   <script src="#script"></script>
   <script src="/js/topcontrol.js"></script>

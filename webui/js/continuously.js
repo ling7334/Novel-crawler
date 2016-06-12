@@ -1,7 +1,8 @@
 $(function(){
       $(window).bind('scroll',function(){show()});
       $(".footer").hide();
-      $(".pager").hide();
+      $(".pager").remove();
+      var query_status = 1;
       function show()
       {
 
@@ -13,32 +14,24 @@ $(function(){
       
       function ajaxReadText()
       {
+          if (query_status == 0){return false}
           var html="";
-        //   $.getJSON('/json/'+ novelname + '/' + nextchapter, function(data) {
-        //             obj = JSON.parse(data.responseText)
-        //             html+='<div class="well well-lg center-block">';
-        //             html+='<h1 align="center">'+obj.title+'</h1>';
-        //             html+='<p id="text">'+obj.description+'</p>';
-        //             html+='</div>';
-        //             $("#resText").append($(html));
-        //             nextchapter = nextchapter + 1
-        //             $(".footer").hide();
-        //             }
-        //         );
+
           $.ajax({
-            //type:'get',
-            //dataType:'json',
-            url:'/json/'+ novelname + '/' + nextchapter,
-            beforeSend:function(){$(".footer").show()},
+            type:'post',
+            dataType:'json',
+            url:'/'+ novelname + '/' + nextchapter,
+            beforeSend:function(){$(".footer").show();query_status =0},
             complete:function(data){
                 obj = JSON.parse(data.responseText)
-                html+='<div class="well well-lg center-block">';
+                html+='<div class="well well-lg center-block" id="text">';
                 html+='<h1 align="center">'+obj.title+'</h1>';
-                html+='<p id="text">'+obj.description+'</p>';
+                html+='<p>'+obj.description+'</p>';
                 html+='</div>';
                 $("#resText").append($(html));
-                nextchapter = nextchapter + 1
+                nextchapter = nextchapter + 1;
                 $(".footer").hide();
+                query_status =1;
             },
             //complete:function(){$(".footer").hide();},
             error:function(XMLResponse){alert(XMLResponse.responseText)}

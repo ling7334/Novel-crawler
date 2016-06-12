@@ -11,4 +11,4 @@ python:
 pip install beautifulsoup4
 pip instal flask
 # command to run tests
-script: python main.py
+script: python server.py

@@ -4,6 +4,8 @@ import const
 import urllib
 import pickle
 import json
+import os
+import shutil
 from flask import request
 from flask import jsonify
 from flask import Flask
@@ -14,20 +16,33 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
+    noveldata={}
     html = open('./webui/index.html',encoding='utf8').read()
-    novellist = pickle.load(open('./novel/list.dat', "rb"))
+    #novellist = pickle.load(open('./novel/list.dat', "rb"))
     content=''
+
+    novellist = list()
+    if not os.path.isdir('./novel/'): 
+        os.mkdir('./novel')
+    if not os.path.isfile('./novel/list.dat'):
+        pickle.dump(novellist,open('./novel/list.dat', "wb"))
+
+    novellist = pickle.load(open('./novel/list.dat', "rb"))
     for novelname in novellist:
-        filename = './novel/' + novelname + '/info.dat'
         try:
-            noveldata = pickle.load(open(filename, "rb"))
+            noveldata = pickle.load(open('./novel/' + novelname + '/info.dat', "rb"))
         except:
-            next
-        filename = './novel/' + novelname + '/chapter_name.dat'
+            continue
+        if not 'title' in noveldata:
+            os.remove('./novel/' + novelname + '/info.dat')
+            del novellist[novellist.index(novelname)]
+            pickle.dump(novellist,open('./novel/list.dat', "wb"))
+            continue
         try:
-            chapter_name = pickle.load(open(filename, "rb"))
+            chapter_name = pickle.load(open('./novel/' + novelname + '/chapter_name.dat', "rb"))
         except:
-            next
+            del novellist[novellist.index(novelname)]
+            continue
         try:
             image = noveldata['image']
         except:
@@ -49,49 +64,32 @@ def index():
     html = html.replace('#novellist',content)
     return html
 
-@app.route('/json/<novelname>/<int:chapter>')
-def chapter_json(novelname,chapter):
-    noveldata ={}
-    novelname = urllib.parse.unquote(novelname)
-    filename = './novel/' + novelname + '/chapter_name.dat'
-    chapter_name = pickle.load(open(filename, "rb"))
-    filename = './novel/' + novelname + '/info.dat'
-    noveldata = pickle.load(open(filename, "rb"))
-    chaptername=chapter_name[chapter]
-    text = usrlib.Get_Chapter(novelname,chapter)
-    text = usrlib.escape(text,2)
-    rt = {"title": chaptername, "description": text}
-    try:
-        lastread = noveldata['lastread']
-    except:
-        lastread = -1
-    if chapter >= lastread:
-        noveldata['lastread'] = chapter
-        filename = './novel/' + novelname + '/info.dat'
-        pickle.dump(noveldata, open(filename, "wb"))
-    return jsonify(rt)
-
 @app.route('/<novelname>/')
-@app.route('/<novelname>')
+@app.route('/<novelname>', methods=['GET', 'POST'])
 def Novel(novelname):
+    
     chapterlist = ''
     noveldata = {}
     novelname = urllib.parse.unquote(novelname)
-    filename = './novel/' + novelname + '/chapter_name.dat'
+
     try:
-        chapter_name = pickle.load(open(filename, "rb"))
-    except:
-        return "咦，这里也没有！"
-    filename = './novel/' + novelname + '/info.dat'
-    try:
-        noveldata = pickle.load(open(filename, "rb"))
+        noveldata = pickle.load(open('./novel/' + novelname + '/info.dat', "rb"))
     except:
         return "咦，这里也没有！"
     try:
         lastread = noveldata['lastread']
     except:
         lastread = -1
+    
+    if request.method == 'POST':
+        return usrlib.Get_New_Chapter_List(noveldata)
         
+
+    try:
+        chapter_name = pickle.load(open('./novel/' + novelname + '/chapter_name.dat', "rb"))
+    except:
+        return "咦，这里也没有！"
+
     html = open('./webui/book.html',encoding='utf8').read()
     try:
         string = noveldata['image']
@@ -106,31 +104,31 @@ def Novel(novelname):
     html = html.replace('#description',string)
     try:
         string = noveldata['author']
-        string = '作者：' + string + ' | '
     except:
         string = ''
     html = html.replace('#author',string)
     try:
         string = noveldata['category']
-        string = '分类：' + string + ' | '
     except:
         string = ''
     html = html.replace('#category',string)
     try:
         string = noveldata['status']
-        string = '状态：' + string + ' | '
     except:
         string = ''
     html = html.replace('#status',string)
     try:
         string = noveldata['update']
-        string = '更新时间：' + string + ' | '
     except:
         string = ''
     html = html.replace('#update',string)
     try:
+        string = noveldata['id']
+    except:
+        string = ''
+    html = html.replace('#resourceid',string)
+    try:
         string = noveldata['homepage']
-        string = '来源：' + '<a href="' + string + '">' + string +'</a>' + ' | '
     except:
         string = ''
     html = html.replace('#resource',string)
@@ -147,58 +145,82 @@ def Novel(novelname):
     return html
 
 @app.route('/<novelname>/<int:chapter>/')
-@app.route('/<novelname>/<int:chapter>')
+@app.route('/<novelname>/<int:chapter>', methods=['GET', 'POST'])
 def Chpater(novelname,chapter=None):
-    continuously = 1
-    noveldata = {}
-    novelname = urllib.parse.unquote(novelname)
-    filename = './novel/' + novelname + '/info.dat'
-    try:
-        noveldata = pickle.load(open(filename, "rb"))
-    except:
-        return "咦，这里也没有！"
-    filename = './novel/' + novelname + '/chapter_name.dat'
-    chapter_name = pickle.load(open(filename, "rb"))
-    if chapter == -1:
-        chapter= len(chapter_name)-1
-    if (chapter >= 0 and chapter <= len(chapter_name)-1):
+    if request.method == 'POST':
+        noveldata ={}
+        novelname = urllib.parse.unquote(novelname)
+
+        if chapter == None:
+            return '-1'
+        
+        chapter_name = pickle.load(open('./novel/' + novelname + '/chapter_name.dat', "rb"))
+        noveldata = pickle.load(open('./novel/' + novelname + '/info.dat', "rb"))
         chaptername=chapter_name[chapter]
         text = usrlib.Get_Chapter(novelname,chapter)
         text = usrlib.escape(text,2)
-        html = open('./webui/chapter.html',encoding='utf8').read()
-        html = html.replace('#novelname',novelname)
-        html = html.replace('#chaptername',chaptername)
-        html = html.replace('#NovelLink','/'+novelname+'/')
-        html = html.replace('#text',text)
-        html = html.replace('#chapter',repr(chapter))
-        html = html.replace('#novelpage','/' + novelname + '/')
-        if chapter<len(chapter_name)-1:
-            html = html.replace('#next','/' + novelname + '/' + repr(chapter+1))
-        else:
-            html = html.replace('#next','/' + novelname + '/')
-        if chapter>0:
-            html = html.replace('#previous','/' + novelname + '/' + repr(chapter-1))
-        else:
-            html = html.replace('#previous','/' + novelname + '/')
-        if continuously == 1:
-            html = html.replace('#script','/js/continuously.js')
-            html = html.replace('#novelname',novelname)
-            html = html.replace('#chapter',repr(chapter+1))
-        else:
-            html = html.replace('#script','/js/pager.js')
+        rt = {"title": chaptername, "description": text}
         try:
             lastread = noveldata['lastread']
         except:
             lastread = -1
         if chapter >= lastread:
             noveldata['lastread'] = chapter
-            filename = './novel/' + novelname + '/info.dat'
-            pickle.dump(noveldata, open(filename, "wb"))
-        return html
+            pickle.dump(noveldata, open('./novel/' + novelname + '/info.dat', "wb"))
+        return jsonify(rt)
     else:
-        return Novel(novelname)
+        reading_setting ={}
+        try:
+            reading_setting = pickle.load(open('./setting.dat', "rb"))
+        except:
+            reading_setting['continuously'] = 'true'
+        continuously = reading_setting['continuously']
+        noveldata = {}
+        novelname = urllib.parse.unquote(novelname)
+        try:
+            noveldata = pickle.load(open('./novel/' + novelname + '/info.dat', "rb"))
+        except:
+            return "咦，这里也没有！"
+        chapter_name = pickle.load(open('./novel/' + novelname + '/chapter_name.dat', "rb"))
+        if chapter == -1:
+            chapter= len(chapter_name)-1
+        if (chapter >= 0 and chapter <= len(chapter_name)-1):
+            chaptername=chapter_name[chapter]
+            text = usrlib.Get_Chapter(novelname,chapter)
+            text = usrlib.escape(text,2)
+            html = open('./webui/chapter.html',encoding='utf8').read()
+            html = html.replace('#novelname',novelname)
+            html = html.replace('#chaptername',chaptername)
+            html = html.replace('#NovelLink','/'+novelname+'/')
+            html = html.replace('#text',text)
+            html = html.replace('#chapter',repr(chapter))
+            html = html.replace('#novelpage','/' + novelname + '/')
+            if chapter<len(chapter_name)-1:
+                html = html.replace('#next','/' + novelname + '/' + repr(chapter+1))
+            else:
+                html = html.replace('#next','/' + novelname + '/')
+            if chapter>0:
+                html = html.replace('#previous','/' + novelname + '/' + repr(chapter-1))
+            else:
+                html = html.replace('#previous','/' + novelname + '/')
+            if continuously == 'true':
+                html = html.replace('#script','/js/continuously.js')
+                html = html.replace('#novelname',novelname)
+                html = html.replace('#chapter',repr(chapter+1))
+            else:
+                html = html.replace('#script','/js/pager.js')
+            try:
+                lastread = noveldata['lastread']
+            except:
+                lastread = -1
+            if chapter >= lastread:
+                noveldata['lastread'] = chapter
+                pickle.dump(noveldata, open('./novel/' + novelname + '/info.dat', "wb"))
+            return html
+        else:
+            return Novel(novelname)
 
-#@app.route('/search/', methods=['GET', 'POST'])
+@app.route('/search/')
 @app.route('/search', methods=['GET', 'POST'])
 def Search():
     if request.method == 'POST':
@@ -219,25 +241,83 @@ def Search():
 
 @app.route('/retrieve', methods=['POST'])
 def Retrieve():
+    noveldata = {}
+    print(request.form)
+    
     if not 'id' in request.form:
         return '-1'
     if  not 'novelname' in request.form:
         return '-2'
+    
     url = usrlib.Search_By_ID(request.form['novelname'],request.form['id'])
     if url == -1:
-        return '-3'
+        return 'Cannot_Connect'
     noveldata = usrlib.Get_Novel_Info(url,request.form['id'])
     if noveldata == -1:
-        return '-4'
-    if not usrlib.Save_Content(noveldata):
-        return '-5'
-    return '0'
+        return 'Fail_Downoad_Info'
 
-@app.route('/config', methods=['GET', 'POST'])
+    if 'restrict' in request.form:
+        if request.form['restrict']=='1':
+            if request.form['bookmark'] == '1':
+                L_noveldata = pickle.load(open('./novel/'+request.form['novelname']+'/info.dat', "rb"))
+                noveldata['lastread'] = L_noveldata['lastread']
+            if not usrlib.Save_Content(noveldata):
+                return 'Fail_Save_Info'
+            return 'SUCCESS'
+    if os.path.isfile('./novel/'+request.form['novelname']+'/info.dat'): 
+        return 'EXIST'
+    if not usrlib.Save_Content(noveldata):
+        return 'Fail_Save_Info'
+    return 'SUCCESS'
+
+@app.route('/del', methods=['POST'])
+def delfo():
+    if not 'novelname' in request.form:
+        return '-1'
+    if os.path.isdir('./novel/'+request.form['novelname']): 
+        shutil.rmtree('./novel/'+request.form['novelname'])
+        return '0'
+    return '-1'
+
 @app.route('/config/', methods=['GET', 'POST'])
+@app.route('/config', methods=['GET', 'POST'])
 def config():
     if request.method == 'POST':
-        return 0
+        if 'access' in request.form:
+            reading_setting = {}
+            if request.form['access'] == 'getsetting':
+                try:
+                    reading_setting = pickle.load(open('./setting.dat', "rb"))
+                except:
+                    reading_setting['continuously']= 'true'
+                    reading_setting['bold']= 'false'
+                    reading_setting['fontcolor'] = "black"
+                    reading_setting['bkcolor'] = "#f5f5f5"
+                    reading_setting['fontfamily'] = "微软雅黑"
+                    reading_setting['fontsize'] = "30px"
+                return jsonify(reading_setting)
+            elif request.form['access'] == 'savesetting':
+                reading_setting['continuously'] = request.form['continuously']
+                reading_setting['bold'] = request.form['bold']
+                reading_setting['fontcolor'] = request.form['fontcolor']
+                reading_setting['bkcolor'] = request.form['bkcolor']
+                reading_setting['fontfamily'] = request.form['fontfamily']
+                reading_setting['fontsize'] = request.form['fontsize']
+                css='body{position: relative; padding-top: 70px; padding-bottom: 30px;} #text{font-weight: $bold; background: $bkcolor; color: $fontcolor; font-family: $fontfamily; font-size: $fontsize;}'
+                if request.form['bold']=='true':
+                    css = css.replace("$bold",'bold')
+                else:
+                    css = css.replace("$bold",'')
+                css = css.replace("$fontcolor",reading_setting['fontcolor'])
+                css = css.replace("$bkcolor",reading_setting['bkcolor'])
+                css = css.replace("$fontfamily",reading_setting['fontfamily'])
+                css = css.replace("$fontsize",reading_setting['fontsize'])
+                fo = open("./webui/css/custom_theme.css", "wb")
+                fo.write(css.encode('utf8'))
+                fo.close()
+                pickle.dump(reading_setting, open('./setting.dat', "wb"))
+                return '0'
+        return '-1'
     else:
         html = open('./webui/config.html',encoding='utf8').read()
         return html

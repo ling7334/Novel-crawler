@@ -30,7 +30,7 @@
           <li><a href="/search">搜书<span class="glyphicon glyphicon-search"></span></a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="/config/"><span class="glyphicon glyphicon-cog"></span></a></li>
+          <li><a href="/config"><span class="glyphicon glyphicon-cog"></span></a></li>
         </ul>
       </div>
     </div>
@@ -38,13 +38,37 @@
 
 <div class="container">
     <h1 align="center">#novelname</h1>
+
+    <div class="pull-right">
+        <ul class="nav nav-pills">
+          <li class="dropdown">
+            <a class="dropdown-toggle" aria-expanded="false" style="cursor:pointer" data-toggle="dropdown">
+              功能 <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a style="cursor:pointer" onclick="update()">更新</a></li>
+              <li><a style="cursor:pointer" onclick="change()">换源</a></li>
+              <li class="divider"></li>
+              <li style="background:red;"><a style="cursor:pointer" onclick="del()">删除!</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
     <div class="well row">
-      <img class="col-md-4"  width="120" height="150" style="max-width: 120px; max-height: 150px;" alt="" src="#image" border="0">
+      <img class="col-md-4"  width="120" height="150"  style="max-width: 120px; max-height: 150px;" alt="" src="#image" border="0">
       <div class="col-md-8">
         <p><strong>#description</strong></p>
-        <p class="text-muted"> #author #category #status #update #resource</p>
+        <p class="text-muted">
+          <span>作者：</span><span id="author">#author</span><span> | </span>
+          <span>分类：</span><span id="category">#category</span><span> | </span>
+          <span>状态：</span><span id="status">#status</span><span> | </span>
+          <span>更新时间：</span><span id="update">#update</span><span> | </span>
+          <span>来源：</span><span><a  id="resource" href="#resource">#resourceid</a></span><span> | </span>
+        </p>
       </div>
     </div>
+
     <div class="list-group row">
         #chapterlist
     </ul>
@@ -61,6 +85,10 @@
     ================================================== -->
   <script src="/js/jquery.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/topcontrol.js"></script>
+  <script src="/js/booktool.js"></script>
+
+<div id = "aldiv" style="position: fixed; bottom: 80px; right: 30px; opacity: 1;"></div>
 
 </body>
 

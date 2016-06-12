@@ -30,7 +30,7 @@
           <li class="active"><a href="/search">搜书<span class="glyphicon glyphicon-search"></span></a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="/config/"><span class="glyphicon glyphicon-cog"></span></a></li>
+          <li><a href="/config"><span class="glyphicon glyphicon-cog"></span></a></li>
         </ul>
       </div>
     </div>
@@ -40,12 +40,10 @@
   <div class="row">
     <div class="col-md-4"></div>
     <div class="input-group input-group-md col-md-4">
-      <input type="text" class="form-control" placeholder="小说名" aria-describedby="basic-addon2" id="search-novel">
-      <span class="input-group-btn"><button class="btn btn-default" type="button" onClick="search()">搜索</button></span>
+      <input type="text" class="form-control" placeholder="小说名" aria-describedby="basic-addon2" id="search-novel" onkeydown='if(event.keyCode==13){search();}'>
+      <span class="input-group-btn"><button id="searchbtn" class="btn btn-default" type="button" onClick="search()">搜索</button></span>
     </div>
     <div class="col-md-4"></div>
-  </div>
-  <div class="list-group">
   </div>
 </div>
 
@@ -64,6 +62,23 @@
   <script src="/js/bootstrap.min.js"></script>
   <script src="/js/retrieve.js"></script>
   <script src="/js/search.js"></script>
+
+<div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">警告</h4>
+         </div>
+         <div class="modal-body">小说已存在，是否覆盖。</div>
+         <div class="modal-footer">
+           <label><input id="bookmark" type="checkbox">保留书签 </label>
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button id="rewrite" type="button" class="btn btn-danger" data-dismiss="modal">覆盖</button>
+         </div>
+      </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+
 </body>
 
 </html>

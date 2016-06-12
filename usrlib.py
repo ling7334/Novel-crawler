@@ -4,6 +4,7 @@ import urllib
 import urllib.request
 import configparser
 import pickle
+from flask import jsonify
 from threading import Thread
 from bs4 import BeautifulSoup
 
@@ -359,26 +360,21 @@ def Save_Content(noveldata):
             url = opts['url'] + eval(opts['chapter_link'])
         chapter_link.append(url)
     #--------------------------------------------------创建小说文件夹
-    filename = './novel/' + noveldata['title'] + '/'
-    if not os.path.exists(filename):
-        os.makedirs(filename)
+    if not os.path.exists('./novel/' + noveldata['title'] + '/'):
+        os.makedirs('./novel/' + noveldata['title'] + '/')
     #--------------------------------------------------写入小说信息
-    
-    filename = './novel/' + noveldata['title'] + '/info.dat'
-    pickle.dump(noveldata, open(filename, "wb"))
+
+    pickle.dump(noveldata, open('./novel/' + noveldata['title'] + '/info.dat', "wb"))
     #--------------------------------------------------写入小说列表
-    filename = './novel/list.dat'
     novel_list = list()
     for item in os.listdir('./novel/'): 
         if os.path.isfile('./novel/'+item+'/info.dat'): 
             novel_list.append(item)
-    pickle.dump(novel_list, open(filename, "wb"))
+    pickle.dump(novel_list, open('./novel/list.dat', "wb"))
 
     #--------------------------------------------------写入小说目录
-    filename = './novel/' + noveldata['title'] + '/chapter_name.dat'
-    pickle.dump(chapter_name, open(filename, "wb"))
-    filename = './novel/' + noveldata['title'] + '/chapter_link.dat'
-    pickle.dump(chapter_link, open(filename, "wb"))
+    pickle.dump(chapter_name, open('./novel/' + noveldata['title'] + '/chapter_name.dat', "wb"))
+    pickle.dump(chapter_link, open('./novel/' + noveldata['title'] + '/chapter_link.dat', "wb"))
     #--------------------------------------------------写入小说章节
     # if end == -1:
     #     end = len(self.chapter_link)
@@ -391,6 +387,55 @@ def Save_Content(noveldata):
     #     fo.write(text.encode('utf8'))
     #     fo.close()
     return True
+
+def Get_New_Chapter_List(noveldata):
+    D_noveldata ={}
+    chapter_name=[]
+    chapter_link=[]
+    D_chapter_name =[]
+    rt=[]
+
+    if 'content_link' in noveldata:
+        url = noveldata['content_link']
+    else:
+        url = noveldata['infolink']
+    D_noveldata = Get_Novel_Info(url,noveldata['id'])
+    if D_noveldata == -1:
+            return '-1'
+    if D_noveldata['latest'] == noveldata['latest']:
+        return '0'
+
+    config = configparser.ConfigParser()
+    config.read('./config.ini',encoding='utf8')
+    opts = config[noveldata['id']]
+    chapter_name = pickle.load(open('./novel/' + noveldata['title'] + '/chapter_name.dat', "rb"))
+    try:
+        data = urllib.request.urlopen(url).read()                       #读取目录页面内容
+    except:
+        return '-1'                                                       #目录页面无法连接
+    soup = BeautifulSoup(data,"html.parser")                            #构建BS数据
+    #--------------------------------------------------抓取小说章节列表
+    string = 'soup.'+opts['chapter_list']
+    for chapter_list in eval(string):
+        string = eval(opts['chapter_name'])
+        string = str(string)
+        D_chapter_name.append(string)
+        url = eval(opts['chapter_link'])
+        if  not url.startswith('http'):
+            url = opts['url'] + eval(opts['chapter_link'])
+        chapter_link.append(url)
+    for chapter in D_chapter_name:
+        if not chapter in chapter_name:
+            rt.append({"index": D_chapter_name.index(chapter), "name": chapter})
+    D_noveldata['lastread'] = noveldata['lastread']
+    pickle.dump(D_noveldata, open('./novel/' + noveldata['title'] + '/info.dat', "wb"))
+    #--------------------------------------------------写入小说目录
+    pickle.dump(D_chapter_name, open('./novel/' + noveldata['title'] + '/chapter_name.dat', "wb"))
+    pickle.dump(chapter_link, open('./novel/' + noveldata['title'] + '/chapter_link.dat', "wb"))
+    t = {"list": rt}
+    return jsonify(t)
+
+
 
 def escape(txt,space):
     '''将txt文本中的空格、&、<、>、（"）、（'）转化成对应的的字符实体，以方便在html上显示'''
@@ -423,13 +468,8 @@ def Load_Novel_Data(novelname):
         return None
         
 def Load_Chapter_List(novelname):
-    chapter_name = list()
-    filename = './novel/' + novelname + '/chapter_name.dat'
-    #filename1 = './novel/' + novelname + '/chapter_link.dat'
     try:
-        chapter_name = pickle.load(open(filename, "rb"))
-        #chapter_link = pickle.load(open(filename1, "rb"))
-        return chapter_name#, chapter_link
+        return pickle.load(open('./novel/' + novelname + '/chapter_name.dat', "rb"))#, chapter_link = pickle.load(open('./novel/' + novelname + '/chapter_link.dat', "rb"))
     except:
         print("未找到章节列表")
         return None
