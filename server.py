@@ -273,7 +273,7 @@ def Retrieve():
 
 @app.route('/del', methods=['POST'])
 def delfo():
-    print(request.form)
+    #print(request.form)
     if not 'novelname' in request.form:
         return '-1'
     if os.path.isdir('./novel/'+request.form['novelname']): 
@@ -331,7 +331,7 @@ def config():
                 return '0'
             elif request.form['access'] == 'saveconfig':
                 string = urllib.parse.unquote(request.form['config'])
-                print (string)
+                #print (string)
                 fo = open("./config.ini", "wb")
                 fo.write(string.encode('utf8'))
                 fo.close()

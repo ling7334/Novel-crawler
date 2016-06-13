@@ -5,7 +5,7 @@ import urllib.request
 import configparser
 import pickle
 from flask import jsonify
-from threading import Thread
+#from threading import Thread
 from bs4 import BeautifulSoup
 
 class RetrieveNovel:
@@ -464,7 +464,7 @@ def Load_Novel_Data(novelname):
     try:
         return pickle.load(open('./novel/' + novelname + '/info.dat', "rb"))
     except:
-        #print("未找到该小说")
+        print("未找到该小说")
         return None
         
 def Load_Chapter_List(novelname):
