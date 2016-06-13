@@ -44,8 +44,6 @@
       <ul class="nav nav-pills nav-stacked" role="tablist" style="position: fixed; top: 70px; left: 10px; opacity: 1; width: 15%;">
         <li role="presentation" class="active"><a href="#reading" aria-controls="reading" role="tab" data-toggle="tab">阅读设置<i class="glyphicon glyphicon-menu-right pull-right"></i></a></li>
         <li role="presentation"><a href="#search" aria-controls="search" role="tab" data-toggle="tab">搜书设置<i class="glyphicon glyphicon-menu-right pull-right"></i></a></li>
-        <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages<i class="glyphicon glyphicon-menu-right pull-right"></i></a></li>
-        <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings<i class="glyphicon glyphicon-menu-right pull-right"></i></a></li>
       </ul>
     </div>
     <!-- Tab panes -->
@@ -108,19 +106,35 @@
 
           </fieldset>
         </form>
-
+        <div class="pull-right">
+          <button class="btn btn-default btn-lg" type="reset" id="readcancel" onClick="readreset()">重置</button>
+          <button class="btn btn-primary btn-lg" type="submit" id="readsubmit" onClick="readsave()">提交</button>
         </div>
-        <div role="tabpanel" class="tab-pane" id="search">施工中2</div>
-        <div role="tabpanel" class="tab-pane" id="messages">施工中3</div>
-        <div role="tabpanel" class="tab-pane" id="settings">施工中4</div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="search">
+          <form class="form-horizontal">
+          <fieldset>
+            <legend>搜索设置</legend>
+            <div class="form-group">
+              <label class="col-lg-2 control-label" for="searchconfig">搜索背景</label>
+              <div class="input-group col-lg-10">
+                <textarea class="form-control" id="searchconfig" rows="30"></textarea>
+              </div>
+              <div class="col-lg-2"></div>
+              <span class="help-block col-lg-10">格式为标准config格式，搜索设置使用beautifulsoup4，具体参阅<a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc.zh/">相关文档</a></span>
+            </div>
+
+          </fieldset>
+          </form>
+          <div class="pull-right">
+            <button class="btn btn-default btn-lg" type="reset" id="searchcancel" onClick="searchreset()">重置</button>
+            <button class="btn btn-primary btn-lg" type="submit" id="searchsubmit" onClick="searchsave()">提交</button>
+          </div>
+        </div>
       </div>
 
     </div>
 
-    <div id="Change" style="position: fixed; bottom: 10px; right: 30px; opacity: 1;">
-      <button class="btn btn-default btn-lg" type="reset" id="cancel" onClick="reset()">重置</button>
-      <button class="btn btn-primary btn-lg" type="submit" id="submit" onClick="save()">提交</button>
-    </div>
 
     <!-- Placed at the end of the document so the pages load faster -->
     <!-- Bootstrap core JavaScript
@@ -129,6 +143,7 @@
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/bootstrap-switch.min.js"></script>
     <script src="/js/config.js"></script>
+
     <div id="aldiv" style="position: fixed; bottom: 80px; right: 30px; opacity: 1;"></div>
 
 </body>

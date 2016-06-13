@@ -1,20 +1,38 @@
-function okkey(){
+function readok(){
     $("#aldiv")
     .prepend('<div class="alert alert-dismissible alert-success"><button class="close" type="button" data-dismiss="alert">&times;</button><strong>成功！</strong>清空缓存以更新。</div>')
     .children(':first')
     .delay(5000)
     .fadeOut(1000);
-    $("#submit").removeClass('btn-primary').removeClass('btn-success').removeClass('btn-danger');
-    $("#submit").addClass('btn-success');
+    $("#readsubmit").removeClass('btn-primary').removeClass('btn-success').removeClass('btn-danger');
+    $("#readsubmit").addClass('btn-success');
 }
-function fkey(){
+function readfail(){
     $("#aldiv")
     .prepend('<div class="alert alert-dismissible alert-danger"><button class="close" type="button" data-dismiss="alert">&times;</button><strong>失败！</strong>哪里出错了。</div>')
     .children(':first')
     .delay(5000)
     .fadeOut(1000);
-    $("#submit").removeClass('btn-primary').removeClass('btn-success').removeClass('btn-danger');
-    $("#submit").addClass('btn-danger');
+    $("#readsubmit").removeClass('btn-primary').removeClass('btn-success').removeClass('btn-danger');
+    $("#readsubmit").addClass('btn-danger');
+}
+function searchok(){
+    $("#aldiv")
+    .prepend('<div class="alert alert-dismissible alert-success"><button class="close" type="button" data-dismiss="alert">&times;</button><strong>成功！</strong>清空缓存以更新。</div>')
+    .children(':first')
+    .delay(5000)
+    .fadeOut(1000);
+    $("#searchsubmit").removeClass('btn-primary').removeClass('btn-success').removeClass('btn-danger');
+    $("#searchsubmit").addClass('btn-success');
+}
+function searchfail(){
+    $("#aldiv")
+    .prepend('<div class="alert alert-dismissible alert-danger"><button class="close" type="button" data-dismiss="alert">&times;</button><strong>失败！</strong>哪里出错了。</div>')
+    .children(':first')
+    .delay(5000)
+    .fadeOut(1000);
+    $("#searchsubmit").removeClass('btn-primary').removeClass('btn-success').removeClass('btn-danger');
+    $("#searchsubmit").addClass('btn-danger');
 }
 
 function init(){
@@ -36,6 +54,7 @@ function init(){
                     var div = document.createElement('div');
                     div.innerHTML = obj.fontfamily;
                     localStorage.fontfamily =  div.innerText;
+                    localStorage.config = obj.config;
                 }
                 else{
                     localStorage.continuously = true;
@@ -44,15 +63,17 @@ function init(){
                     localStorage.bkcolor = "#8FBC8F";
                     localStorage.fontfamily = "黑体";
                     localStorage.fontsize = "30px";
+                    localStorage.config = "";
                 }
-                reset();
+                readreset();
+                searchreset();
                 query_status =1;
             },
-            error:function(){query_status =1;}
-          });//.ajax
+            error:function(data){alert(data.responseText);query_status =1;}
+          })//.ajax
 }
 
-function save(){
+function readsave(){
     $.ajax({
             type:'post',
             dataType:'json',
@@ -76,16 +97,16 @@ function save(){
                     localStorage.bkcolor = $("#bkcolor").val();
                     localStorage.fontfamily = $("#fontfamily").val();
                     localStorage.fontsize = $("#fontsize").val();
-                    okkey();
+                    readok();
                 }
-                else{fkey();}
+                else{readfail();}
                 query_status =1;
             },
-            error:function(){fkey();query_status =1;}
-          });//.ajax
+            error:function(data){alert(data.responseText);query_status =1;}
+          })//.ajax
 }
 
-function reset(){
+function readreset(){
     if (localStorage.continuously == 'true'){
         $('#continuously').bootstrapSwitch('state', true);
     }
@@ -99,22 +120,44 @@ function reset(){
         $('#bold').bootstrapSwitch('state', false);
     }
 
-
-    //$("#bkcolor").attr("value",localStorage.bkcolor);
     $("#bkcolor").val(localStorage.bkcolor);
     $("#bkcolor-display").css("background",localStorage.bkcolor);
 
-    //$("#fontcolor").attr("value",localStorage.fontcolor);
     $("#fontcolor").val(localStorage.fontcolor);
     $("#fontcolor-display").css("background",localStorage.fontcolor);
 
-    //$("#fontfamily").attr("value",localStorage.fontfamily);
     $("#fontfamily").val(localStorage.fontfamily);
     $("#fontfamily").css("font-family",localStorage.fontfamily);
 
-    //$("#fontsize").attr("value",localStorage.fontsize);
     $("#fontsize").val(localStorage.fontsize);
     $("#fontsize").css("font-Size",localStorage.fontsize);
+}
+
+function searchsave(){
+    $.ajax({
+            type:'post',
+            dataType:'json',
+            url:'/config',
+            beforeSend:function(){query_status =0},
+            data: {
+                 "access"       : "saveconfig",
+                 "config"       : $("#searchconfig").val()
+            },
+            complete:function(data){
+                obj = JSON.parse(data.responseText);
+                if (obj == '0'){
+                    localStorage.config = $("#searchconfig").val();
+                    searchok();
+                }
+                else{searchfail();}
+                query_status =1;
+            },
+            error:function(data){alert(data.responseText);query_status =1;}
+          })//.ajax
+}
+
+function searchreset(){
+    $("#searchconfig").val(localStorage.config);
 }
 
 $(document).ready(function(){

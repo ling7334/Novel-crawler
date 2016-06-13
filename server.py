@@ -5,7 +5,8 @@ import urllib
 import pickle
 import json
 import os
-import shutil
+import re
+#import shutil
 from flask import request
 from flask import jsonify
 from flask import Flask
@@ -123,7 +124,7 @@ def Novel(novelname):
         string = ''
     html = html.replace('#update',string)
     try:
-        string = noveldata['id']
+        string = noveldata['website']
     except:
         string = ''
     html = html.replace('#resourceid',string)
@@ -242,7 +243,7 @@ def Search():
 @app.route('/retrieve', methods=['POST'])
 def Retrieve():
     noveldata = {}
-    print(request.form)
+    #print(request.form)
     
     if not 'id' in request.form:
         return '-1'
@@ -272,10 +273,18 @@ def Retrieve():
 
 @app.route('/del', methods=['POST'])
 def delfo():
+    print(request.form)
     if not 'novelname' in request.form:
         return '-1'
     if os.path.isdir('./novel/'+request.form['novelname']): 
-        shutil.rmtree('./novel/'+request.form['novelname'])
+        os.remove('./novel/'+request.form['novelname']+'/info.dat')
+        os.remove('./novel/'+request.form['novelname']+'/chapter_name.dat')
+        os.remove('./novel/'+request.form['novelname']+'/chapter_link.dat')
+        novellist = pickle.load(open('./novel/list.dat','rb'))
+        if request.form['novelname'] in novellist:
+            novellist.remove(request.form['novelname'])
+            pickle.dump(novellist, open('./novel/list.dat', "wb"))
+        #shutil.rmtree('./novel/'+request.form['novelname'])
         return '0'
     return '-1'
 
@@ -284,38 +293,48 @@ def delfo():
 def config():
     if request.method == 'POST':
         if 'access' in request.form:
-            reading_setting = {}
+            setting = {}
             if request.form['access'] == 'getsetting':
                 try:
-                    reading_setting = pickle.load(open('./setting.dat', "rb"))
+                    config = open('./config.ini',encoding='utf8').read()
+                    setting = pickle.load(open('./setting.dat', "rb"))
+                    setting['config'] = config
                 except:
-                    reading_setting['continuously']= 'true'
-                    reading_setting['bold']= 'false'
-                    reading_setting['fontcolor'] = "black"
-                    reading_setting['bkcolor'] = "#f5f5f5"
-                    reading_setting['fontfamily'] = "微软雅黑"
-                    reading_setting['fontsize'] = "30px"
-                return jsonify(reading_setting)
+                    setting['continuously']= 'true'
+                    setting['bold']= 'false'
+                    setting['fontcolor'] = "black"
+                    setting['bkcolor'] = "#f5f5f5"
+                    setting['fontfamily'] = "微软雅黑"
+                    setting['fontsize'] = "30px"
+                    setting['config'] = ''
+                return jsonify(setting)
             elif request.form['access'] == 'savesetting':
-                reading_setting['continuously'] = request.form['continuously']
-                reading_setting['bold'] = request.form['bold']
-                reading_setting['fontcolor'] = request.form['fontcolor']
-                reading_setting['bkcolor'] = request.form['bkcolor']
-                reading_setting['fontfamily'] = request.form['fontfamily']
-                reading_setting['fontsize'] = request.form['fontsize']
+                setting['continuously'] = request.form['continuously']
+                setting['bold'] = request.form['bold']
+                setting['fontcolor'] = request.form['fontcolor']
+                setting['bkcolor'] = request.form['bkcolor']
+                setting['fontfamily'] = request.form['fontfamily']
+                setting['fontsize'] = request.form['fontsize']
                 css='body{position: relative; padding-top: 70px; padding-bottom: 30px;} #text{font-weight: $bold; background: $bkcolor; color: $fontcolor; font-family: $fontfamily; font-size: $fontsize;}'
                 if request.form['bold']=='true':
                     css = css.replace("$bold",'bold')
                 else:
                     css = css.replace("$bold",'')
-                css = css.replace("$fontcolor",reading_setting['fontcolor'])
-                css = css.replace("$bkcolor",reading_setting['bkcolor'])
-                css = css.replace("$fontfamily",reading_setting['fontfamily'])
-                css = css.replace("$fontsize",reading_setting['fontsize'])
+                css = css.replace("$fontcolor",setting['fontcolor'])
+                css = css.replace("$bkcolor",setting['bkcolor'])
+                css = css.replace("$fontfamily",setting['fontfamily'])
+                css = css.replace("$fontsize",setting['fontsize'])
                 fo = open("./webui/css/custom_theme.css", "wb")
                 fo.write(css.encode('utf8'))
                 fo.close()
-                pickle.dump(reading_setting, open('./setting.dat', "wb"))
+                pickle.dump(setting, open('./setting.dat', "wb"))
+                return '0'
+            elif request.form['access'] == 'saveconfig':
+                string = urllib.parse.unquote(request.form['config'])
+                print (string)
+                fo = open("./config.ini", "wb")
+                fo.write(string.encode('utf8'))
+                fo.close()
                 return '0'
         return '-1'
     else:
@@ -336,4 +355,4 @@ def send_img(path):
     return send_from_directory('./webui/img', path)
     
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

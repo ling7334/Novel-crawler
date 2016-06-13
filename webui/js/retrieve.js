@@ -22,6 +22,6 @@ function Retrieve(id,novelname,restrict){
             $(".progress").hide();
             query_status =1;
         },
-        //error:function(XMLResponse){alert(XMLResponse.responseText)}
+        //error:function(XMLResponse){alert(XMLResponse.responseText);query_status =1;}
     });
 }

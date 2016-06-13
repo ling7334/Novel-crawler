@@ -209,14 +209,14 @@ class RetrieveNovel:
 def Get_ID():
     ID = list()
     config = configparser.ConfigParser()
-    config.read('./config.ini')
+    config.read('./config.ini',encoding='utf8')
     for item in config.sections():
         ID.append(item)
     return ID
 
 def Search_By_ID(novelname,id):
     config = configparser.ConfigParser()
-    config.read('./config.ini')
+    config.read('./config.ini',encoding='utf8')
     opts = config[id]
     __searchdata = {}
     __searchdata[opts['keyword']] = novelname	                                #构建搜索关键词
@@ -476,7 +476,7 @@ def Load_Chapter_List(novelname):
 
 def Get_chapters(id,chapter_link,index,end=-1):
     config = configparser.ConfigParser()
-    config.read('./config.ini')
+    config.read('./config.ini',encoding='utf8')
     opts = config[id]
     if end == -1:
         end = len(chapter_link)
@@ -514,7 +514,7 @@ def Search_Chapter(novelname,index):
         return -1
     
     config = configparser.ConfigParser()
-    config.read('./config.ini')                                         #载入网站设置
+    config.read('./config.ini',encoding='utf8')                                         #载入网站设置
     config = config[noveldata['id']]
     
     try:

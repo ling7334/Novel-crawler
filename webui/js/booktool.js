@@ -50,18 +50,19 @@ function update(){
 
 function del(){
     if (query_status == 0){return false}
+    var title = $("title").text();
     $.ajax({
         type:'post',
         dataType:'json',
         url:'/del',
-        data: {"novelname": $("title").html()},
+        data: {"novelname": title},
         beforeSend:function(){query_status =0},
         complete:function(data){
             obj = data.responseText;
             if (obj == '0'){location = "/";}
             query_status =1;
         },
-        error:function(XMLResponse){query_status =1}
+        error:function(XMLResponse){alert(XMLResponse.responseText);query_status =1}
     });
 }
 
