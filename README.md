@@ -8,7 +8,7 @@
 欢迎各位提出意见和指正，帮助完善软件。 [__提出问题反馈__](https://github.com/ling7334/Novel-crawler/issues/new)
 
 ## 下载
-[__发行版__](https://github.com/ling7334/Novel-crawler/releases/download/V0.1-alpha-1/Novel-Crawler.zip)
+[__发行版__](https://github.com/ling7334/Novel-crawler/releases)
 
 [__源码__](https://codeload.github.com/ling7334/Novel-crawler/zip/master)
 
