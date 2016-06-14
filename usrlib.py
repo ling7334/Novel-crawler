@@ -8,205 +8,9 @@ from flask import jsonify
 #from threading import Thread
 from bs4 import BeautifulSoup
 
-class RetrieveNovel:
-    """该类包含一系列方法用以获取小说
-    """
-    identity = list()
-    latest = list()
-    link = list()
-    chapter_name = list()
-    chapter_link = list()
-    
-    noveldata = {}
-    
-    config = configparser.ConfigParser()
-    
-    
-    def __init__(self):
-        self.config.read('./config.ini')                                                #载入网站设置
-        
-    
-    def search(self,novelname):
-        """从config中规定的网站查找小说。
-        novelname：小说名
-        """
-        __searchdata = {}
-
-        #--------------------------------------------------搜索引擎找小说
-        for item in self.config.sections():
-            self.opts = self.config[item]
-            __searchdata[self.opts['keyword']] = novelname                              #构建搜索关键词
-            href = urllib.parse.urlencode(__searchdata, encoding='GBK')                 #关键词URL编码
-            full_url = self.opts["slink"] + href                                        #构建搜索链接
-            try:
-                data=urllib.request.urlopen(full_url).read()                            #读取搜索页面内容
-            except:
-                continue                                                                #网站无法连接
-            soup = BeautifulSoup(data,"html.parser")                                    #构建BS数据
-            string = 'soup.' + self.opts["novel_link"]
-            href = eval(string)                                                         #获取小说链接
-            full_url = self.opts["url"] + href                                          #构建小说页面链接
-            try:
-                data = urllib.request.urlopen(full_url).read()                          #读取小说页面内容
-            except:
-                continue                                                                #小说页面无法连接
-            #--------------------------------------------------记录有效网站
-            self.identity.append(item)                                                  
-            string = 'soup.' + self.opts['slatest']
-            string = eval(string)
-            self.latest.append(string)
-            string = 'soup.' + self.opts['novel_link']
-            string = eval(string)
-            if not string.startswith('http'):
-                string = self.opts["url"] + string                                      #link为绝对路径
-            self.link.append(string)
-        return self.identity,self.latest,self.link
-
-    def Get_novel_info(self,url):
-        """根据之前的搜索内容，获取小说信息
-        """
-        #url = self.link[self.identity.index(id)]
-        try:
-            data = urllib.request.urlopen(url).read()                       #读取小说页面内容
-        except:
-            return None                                                     #小说页面无法连接
-        soup = BeautifulSoup(data,"html.parser")                            #构建BS数据
-        #--------------------------------------------------抓取小说信息
-        self.noveldata['homepage'] = self.opts['url']
-        self.noveldata['infolink'] = url
-        self.noveldata['id'] = self.opts['id']
-        
-        string = 'soup.'+self.opts['title']
-        self.noveldata['title'] = eval(string)
-        
-        try:
-            string = 'soup.'+self.opts['content_link']
-            string = eval(string)
-            if not string.startswith('http'):
-                string = self.noveldata['homepage'] + string
-            self.noveldata['content_link'] = eval(string)
-        except:
-            pass
-            
-        try:
-            string = 'soup.'+self.opts['description']
-            self.noveldata['description'] = eval(string)
-        except:
-            pass
-            
-        try:
-            string = 'soup.'+self.opts['category']
-            self.noveldata['category'] = eval(string)
-        except:
-            pass
-            
-        try:
-            string = 'soup.'+self.opts['author']
-            self.noveldata['author'] = eval(string)
-        except:
-            pass
-            
-        try:
-            string = 'soup.'+self.opts['status']
-            self.noveldata['status'] = eval(string)
-        except:
-            pass
-            
-        try:
-            string = 'soup.'+self.opts['update']
-            self.noveldata['update'] = eval(string)
-        except:
-            pass
-            
-        try:
-            string = 'soup.'+self.opts['latest']
-            self.noveldata['latest'] = eval(string)
-        except:
-            pass
-            
-        try:
-            string = 'soup.'+self.opts['image']
-            
-        except:
-            pass
-        string = eval(string)
-        if not string.startswith('http'):
-            string = self.noveldata['homepage'] + string
-        self.noveldata['image'] = string
-        
-        #--------------------------------------------------创建小说文件夹
-        filename = './novel/' + self.noveldata['title'] + '/'
-        if not os.path.exists(filename):
-            os.makedirs(filename)
-        #--------------------------------------------------写入小说信息
-        filename = './novel/' + self.noveldata['title'] + '/' + 'info.dat'
-        pickle.dump(self.noveldata, open(filename, "wb"))
-        #--------------------------------------------------写入小说列表
-        filename = './novel/' + 'list.dat'
-        novel_list = list()
-        for item in os.listdir('./novel/'): 
-            if os.path.isfile('./novel/'+item+'info.dat'): 
-                novel_list.append(item)
-        pickle.dump(novel_list, open(filename, "wb"))
-        
-        return self.noveldata
-    
-    def Get_content(self,url,start=0,end=-1):
-        """从指定网站下载小说
-        url：小说目录页URL
-        start：下载起始章节
-        end：下载结束章节
-        """
-        try:
-            data = urllib.request.urlopen(url).read()                       #读取目录页面内容
-        except:
-            return False                                                    #目录页面无法连接
-        soup = BeautifulSoup(data,"html.parser")                            #构建BS数据
-        #--------------------------------------------------抓取小说章节列表
-        string = 'soup.'+self.opts['chapter_list']
-        for chapter_list in eval(string):
-            string = eval(self.opts['chapter_name'])
-            string = str(string)
-            self.chapter_name.append(string)
-            url = eval(self.opts['chapter_link'])
-            if  not url.startswith('http'):
-                url = self.opts['url'] + eval(self.opts['chapter_link'])
-            self.chapter_link.append(url)
-        #--------------------------------------------------创建小说文件夹
-        filename = './novel/' + self.noveldata['title'] + '/'
-        if not os.path.exists(filename):
-            os.makedirs(filename)
-        #--------------------------------------------------写入小说信息
-        
-        filename = './novel/' + self.noveldata['title'] + '/info.dat'
-        pickle.dump(self.noveldata, open(filename, "wb"))
-        #--------------------------------------------------写入小说列表
-        filename = './novel/list.dat'
-        novel_list = list()
-        for item in os.listdir('./novel/'): 
-            if os.path.isfile('./novel/'+item+'/info.dat'): 
-                novel_list.append(item)
-        pickle.dump(novel_list, open(filename, "wb"))
-
-        #--------------------------------------------------写入小说目录
-        filename = './novel/' + self.noveldata['title'] + '/chapter_name.dat'
-        pickle.dump(self.chapter_name, open(filename, "wb"))
-        filename = './novel/' + self.noveldata['title'] + '/chapter_link.dat'
-        pickle.dump(self.chapter_link, open(filename, "wb"))
-        #--------------------------------------------------写入小说章节
-        if end == -1:
-            end = len(self.chapter_link)
-        for i in range(start,end):
-            data=urllib.request.urlopen(self.chapter_link[i]).read()            #读取章节内容
-            soup = BeautifulSoup(data,"html.parser")                            #构建BS数据
-            text = eval('soup.'+self.opts['text'])
-            filename = './novel/' + self.noveldata['title'] + '/' + repr(i) + '.txt'
-            fo = open(filename, "wb")
-            fo.write(text.encode('utf8'))
-            fo.close()
-        return True
 
 def Get_ID():
+    '''获取搜索网站设置的ID列表'''
     ID = list()
     config = configparser.ConfigParser()
     config.read('./config.ini',encoding='utf8')
@@ -215,6 +19,10 @@ def Get_ID():
     return ID
 
 def Search_By_ID(novelname,id):
+    '''获取小说信息（目录）页
+    novelname：小说名
+    id：网站设置ID
+    '''
     config = configparser.ConfigParser()
     config.read('./config.ini',encoding='utf8')
     opts = config[id]
@@ -237,6 +45,9 @@ def Search_By_ID(novelname,id):
     return url
 
 def Get_Novel_Info(url,id):
+    '''获取小说信息
+    url：小说信息（目录）页
+    id：网站ID'''
     config = configparser.ConfigParser()
     config.read('./config.ini',encoding='utf8')
     opts = config[id]
@@ -328,10 +139,8 @@ def Get_Novel_Info(url,id):
     return noveldata
 
 def Save_Content(noveldata):
-    """从指定网站下载章节列表
-    noveldata:小说元数据
-    start：下载起始章节
-    end：下载结束章节
+    """从预定网站下载章节列表
+    noveldata:小说信息字典
     """
     chapter_name=[]
     chapter_link=[]
@@ -389,20 +198,22 @@ def Save_Content(noveldata):
     return True
 
 def Get_New_Chapter_List(noveldata):
-    D_noveldata ={}
+    '''从预定网页更新章节列表
+    noveldata：小说信息字典'''
+    Dnoveldata ={}
     chapter_name=[]
     chapter_link=[]
-    D_chapter_name =[]
+    Dchapter_name =[]
     rt=[]
 
     if 'content_link' in noveldata:
         url = noveldata['content_link']
     else:
         url = noveldata['infolink']
-    D_noveldata = Get_Novel_Info(url,noveldata['id'])
-    if D_noveldata == -1:
+    Dnoveldata = Get_Novel_Info(url,noveldata['id'])
+    if Dnoveldata == -1:
             return '-1'
-    if D_noveldata['latest'] == noveldata['latest']:
+    if Dnoveldata['latest'] == noveldata['latest']:
         return '0'
 
     config = configparser.ConfigParser()
@@ -419,18 +230,18 @@ def Get_New_Chapter_List(noveldata):
     for chapter_list in eval(string):
         string = eval(opts['chapter_name'])
         string = str(string)
-        D_chapter_name.append(string)
+        Dchapter_name.append(string)
         url = eval(opts['chapter_link'])
         if  not url.startswith('http'):
             url = opts['url'] + eval(opts['chapter_link'])
         chapter_link.append(url)
-    for chapter in D_chapter_name:
+    for chapter in Dchapter_name:
         if not chapter in chapter_name:
-            rt.append({"index": D_chapter_name.index(chapter), "name": chapter})
-    D_noveldata['lastread'] = noveldata['lastread']
-    pickle.dump(D_noveldata, open('./novel/' + noveldata['title'] + '/info.dat', "wb"))
+            rt.append({"index": Dchapter_name.index(chapter), "name": chapter})
+    Dnoveldata['lastread'] = noveldata['lastread']
+    pickle.dump(Dnoveldata, open('./novel/' + noveldata['title'] + '/info.dat', "wb"))
     #--------------------------------------------------写入小说目录
-    pickle.dump(D_chapter_name, open('./novel/' + noveldata['title'] + '/chapter_name.dat', "wb"))
+    pickle.dump(Dchapter_name, open('./novel/' + noveldata['title'] + '/chapter_name.dat', "wb"))
     pickle.dump(chapter_link, open('./novel/' + noveldata['title'] + '/chapter_link.dat', "wb"))
     t = {"list": rt}
     return jsonify(t)
@@ -468,27 +279,13 @@ def Load_Novel_Data(novelname):
         return None
         
 def Load_Chapter_List(novelname):
+    '''载入小说章节列表
+    novelname：小说名'''
     try:
         return pickle.load(open('./novel/' + novelname + '/chapter_name.dat', "rb"))#, chapter_link = pickle.load(open('./novel/' + novelname + '/chapter_link.dat', "rb"))
     except:
         print("未找到章节列表")
         return None
-
-def Get_chapters(id,chapter_link,index,end=-1):
-    config = configparser.ConfigParser()
-    config.read('./config.ini',encoding='utf8')
-    opts = config[id]
-    if end == -1:
-        end = len(chapter_link)
-    for i in range(index,end):
-        filename = './novel/' + novelname + repr(i) + '.txt'
-        data=urllib.request.urlopen(chapter_link[i]).read()                 #读取章节内容
-        soup = BeautifulSoup(data,"html.parser")                            #构建BS数据
-        text = eval('soup.'+ opts['text'])
-        fo = open(filename, "wb")
-        fo.write(text.encode('utf8'))
-        fo.close()
-        return True
 
 def Load_Chapter(novelname,index):
     '''载入本地章节内容

@@ -1,11 +1,10 @@
 #encoding:UTF-8
 import usrlib
-import const
 import urllib
 import pickle
 import json
 import os
-import re
+#import re
 #import shutil
 from flask import request
 from flask import jsonify
@@ -152,7 +151,7 @@ def Chpater(novelname,chapter=None):
         noveldata ={}
         novelname = urllib.parse.unquote(novelname)
 
-        if chapter == None:
+        if chapter is None:
             return '-1'
         
         chapter_name = pickle.load(open('./novel/' + novelname + '/chapter_name.dat', "rb"))
@@ -185,7 +184,7 @@ def Chpater(novelname,chapter=None):
         chapter_name = pickle.load(open('./novel/' + novelname + '/chapter_name.dat', "rb"))
         if chapter == -1:
             chapter= len(chapter_name)-1
-        if (chapter >= 0 and chapter <= len(chapter_name)-1):
+        if (0 <= chapter <= len(chapter_name)-1):
             chaptername=chapter_name[chapter]
             text = usrlib.Get_Chapter(novelname,chapter)
             text = usrlib.escape(text,2)
@@ -258,10 +257,9 @@ def Retrieve():
         return 'Fail_Downoad_Info'
 
     if 'restrict' in request.form:
-        if request.form['restrict']=='1':
-            if request.form['bookmark'] == '1':
-                L_noveldata = pickle.load(open('./novel/'+request.form['novelname']+'/info.dat', "rb"))
-                noveldata['lastread'] = L_noveldata['lastread']
+        if request.form['restrict']=='1' and request.form['bookmark'] == '1':
+            Lnoveldata = pickle.load(open('./novel/'+request.form['novelname']+'/info.dat', "rb"))
+            noveldata['lastread'] = Lnoveldata['lastread']
             if not usrlib.Save_Content(noveldata):
                 return 'Fail_Save_Info'
             return 'SUCCESS'
@@ -355,4 +353,4 @@ def send_img(path):
     return send_from_directory('./webui/img', path)
     
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(host="0.0.0.0")
