@@ -35,7 +35,10 @@ def Search_By_ID(novelname,id):
         return -1                                                               #网站无法连接
     soup = BeautifulSoup(data,"html.parser")                                    #构建BS数据
     string = 'soup.' + opts["novel_link"]
-    url = eval(string)                                                          #获取小说页面链接
+    try:
+        url = eval(string)                                                          #获取小说页面链接
+    except:
+        return -1
     if not url.startswith('http'):
         url = opts["url"] + url                                                 #构建小说页面链接
     # try:

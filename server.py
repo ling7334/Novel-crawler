@@ -339,6 +339,10 @@ def config():
         html = open('./webui/config.html',encoding='utf8').read()
         return html
 
+@app.route('/favicon.ico')
+def send_ico():
+    return send_from_directory('./webui/', 'favicon.ico')
+
 @app.route('/js/<path:path>')
 def send_js(path):
     return send_from_directory('./webui/js', path)
@@ -353,4 +357,4 @@ def send_img(path):
     return send_from_directory('./webui/img', path)
     
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run(host='0.0.0.0', debug=True)

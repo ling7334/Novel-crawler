@@ -5,15 +5,22 @@ var query_status = 1;
 function getnovel(i,id){
     if (id[i] == null){return false}
     var html="";
-    if (query_status==i){
+    if (query_status==1){
                 $.ajax({
                     type:'post',
                     dataType:'json',
                     url:'/search',
                     data: { "id": idlist.id[i], "novelname": $("#search-novel").val() },
-                    beforeSend:function(){$(".progress").show();query_status =i},
+                    beforeSend:function(){$(".progress").show();query_status =0},
                     complete:function(data){
                         obj = JSON.parse(data.responseText);
+                        if (obj=='-1'){
+                            $(".progress").hide();
+                            query_status = 1;
+                            i=i+1;
+                            getnovel(i,id);
+                            return false;
+                        }
                         html+='<a class="list-group-item row" style="cursor: pointer;" onclick="Retrieve(\''+ obj.id+'\',\''+obj.title +'\',0)">';
                         html+='<h4 class="list-group-item-heading">'+ obj.website + ' - ' + obj.title +'</h4>';
                         html+='<span class="list-group-item-text col-md-4">最新章节：'+ obj.latest +'</span>';
@@ -22,8 +29,8 @@ function getnovel(i,id){
                         html+='</a>'
                         $(".list-group").append($(html));
                         $(".progress").hide();
-                        query_status = i+1;
-                        i=i+1;
+                        query_status = 1;
+                        i=i+1
                         getnovel(i,id);
                     },
                     error:function(XMLResponse){alert(XMLResponse.responseText);}
@@ -43,6 +50,7 @@ function search(){
         idlist = JSON.parse(id.responseText);
         $(".list-group").remove();
         $(".container").append($(listgroup));
+        query_status = 1;
         getnovel(0,idlist.id);
         //query_status =1;
     },
