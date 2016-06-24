@@ -83,7 +83,6 @@ def Novel(novelname):
     
     if request.method == 'POST':
         return usrlib.Get_New_Chapter_List(noveldata)
-        
 
     try:
         chapter_name = pickle.load(open('./novel/' + novelname + '/chapter_name.dat', "rb"))

@@ -29,7 +29,8 @@ HTML
 
 1. HTML 5
 2. Ajax
-3. Bootstrap 3.3.6
+3. jQuery v2.2.4
+4. Bootstrap 3.3.6
 
 ---
 ### 写这个软件的原因

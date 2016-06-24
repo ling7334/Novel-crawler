@@ -44,7 +44,7 @@ function update(){
             }
             query_status =1;
         },
-        error:function(XMLResponse){fail();query_status =1;}
+        error:function(XMLResponse){alert(XMLResponse.responseText);query_status =1;}
     });
 }
 

@@ -208,6 +208,7 @@ def Get_New_Chapter_List(noveldata):
     chapter_link=[]
     Dchapter_name =[]
     rt=[]
+    t={}
 
     if 'content_link' in noveldata:
         url = noveldata['content_link']
@@ -241,12 +242,13 @@ def Get_New_Chapter_List(noveldata):
     for chapter in Dchapter_name:
         if not chapter in chapter_name:
             rt.append({"index": Dchapter_name.index(chapter), "name": chapter})
-    Dnoveldata['lastread'] = noveldata['lastread']
+    if 'lastread' in noveldata:
+        Dnoveldata['lastread'] = noveldata['lastread']
     pickle.dump(Dnoveldata, open('./novel/' + noveldata['title'] + '/info.dat', "wb"))
     #--------------------------------------------------写入小说目录
     pickle.dump(Dchapter_name, open('./novel/' + noveldata['title'] + '/chapter_name.dat', "wb"))
     pickle.dump(chapter_link, open('./novel/' + noveldata['title'] + '/chapter_link.dat', "wb"))
-    t = {"list": rt}
+    t['list'] = rt
     return jsonify(t)
 
 

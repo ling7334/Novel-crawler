@@ -14,7 +14,7 @@ function getnovel(i,id){
                     beforeSend:function(){$(".progress").show();query_status =0},
                     complete:function(data){
                         obj = JSON.parse(data.responseText);
-                        if (obj=='-1'){
+                        if (obj.title == null){
                             $(".progress").hide();
                             query_status = 1;
                             i=i+1;
