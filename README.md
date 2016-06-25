@@ -22,7 +22,7 @@
 Python
 
 1. Python 3.5.1
-2. BeautifulSoup 4.4 0
+2. BeautifulSoup 4.4.1
 3. Flask 0.11
 
 HTML
@@ -43,6 +43,10 @@ HTML
 1.  完成小说搜索算法
 2.  完成简单的基于浏览器的阅读框架
 3.  充实搜索库
+
+---
+### 测试
+[__测试版__](http://http://novel.mybluemix.net/)
 
 ## 许可证
 [MIT](LICENSE)

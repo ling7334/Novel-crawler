@@ -1,0 +1,4 @@
+---
+applications:
+- name: novel
+  command: python server.py

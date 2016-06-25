@@ -7,8 +7,6 @@ python:
   - "nightly" # currently points to 3.6-dev
 # command to install dependencies
 #install: "pip install -r requirements.txt"
-install:
-  - pip install beautifulsoup4
-  - pip install flask
+install: "pip install -r requirements.txt"
 # command to run tests
 script: python server.py
