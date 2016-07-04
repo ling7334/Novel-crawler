@@ -1,16 +1,12 @@
 #encoding:UTF-8
-import usrlib
-import urllib
-import pickle
-import json
-import os
+#import json
 #import re
 #import shutil
-from flask import request
-from flask import jsonify
-from flask import Flask
-from flask import send_from_directory
-from flask import render_template
+import usrlib
+import pickle
+from urllib.parse import unquote
+from os import (path,mkdir,remove,getenv)
+from flask import (request,jsonify,Flask,send_from_directory,render_template)
 
 app = Flask(__name__)
 
@@ -22,9 +18,9 @@ def index():
     content=''
 
     novellist = list()
-    if not os.path.isdir('./novel/'): 
-        os.mkdir('./novel')
-    if not os.path.isfile('./novel/list.dat'):
+    if not path.isdir('./novel/'): 
+        mkdir('./novel')
+    if not path.isfile('./novel/list.dat'):
         pickle.dump(novellist,open('./novel/list.dat', "wb"))
 
     novellist = pickle.load(open('./novel/list.dat', "rb"))
@@ -34,7 +30,7 @@ def index():
         except:
             continue
         if not 'title' in noveldata:
-            os.remove('./novel/' + novelname + '/info.dat')
+            remove('./novel/' + novelname + '/info.dat')
             del novellist[novellist.index(novelname)]
             pickle.dump(novellist,open('./novel/list.dat', "wb"))
             continue
@@ -59,7 +55,7 @@ def index():
             content += '<p  class="text-primary">最后阅读：<a href="/'+ noveldata['title'] +'/'+repr(noveldata['lastread'])+'/">' + chapter_name[noveldata['lastread']] + '</a></p></div></div>'
         except:
             content += '<p  class="text-primary">最后阅读：</p></div></div>'
-        if novellist.index(novelname) %2==0:
+        if novellist.index(novelname) %2==0:                #分列排布
             content += '<div class="col-md-2"></div>'
     html = html.replace('#novellist',content)
     return html
@@ -70,7 +66,7 @@ def Novel(novelname):
     
     chapterlist = ''
     noveldata = {}
-    novelname = urllib.parse.unquote(novelname)
+    novelname = unquote(novelname)
 
     try:
         noveldata = pickle.load(open('./novel/' + novelname + '/info.dat', "rb"))
@@ -148,7 +144,7 @@ def Novel(novelname):
 def Chpater(novelname,chapter=None):
     if request.method == 'POST':
         noveldata ={}
-        novelname = urllib.parse.unquote(novelname)
+        novelname = unquote(novelname)
 
         if chapter is None:
             return '-1'
@@ -175,7 +171,7 @@ def Chpater(novelname,chapter=None):
             reading_setting['continuously'] = 'true'
         continuously = reading_setting['continuously']
         noveldata = {}
-        novelname = urllib.parse.unquote(novelname)
+        novelname = unquote(novelname)
         try:
             noveldata = pickle.load(open('./novel/' + novelname + '/info.dat', "rb"))
         except:
@@ -262,7 +258,7 @@ def Retrieve():
             if not usrlib.Save_Content(noveldata):
                 return 'Fail_Save_Info'
             return 'SUCCESS'
-    if os.path.isfile('./novel/'+request.form['novelname']+'/info.dat'): 
+    if path.isfile('./novel/'+request.form['novelname']+'/info.dat'): 
         return 'EXIST'
     if not usrlib.Save_Content(noveldata):
         return 'Fail_Save_Info'
@@ -273,10 +269,10 @@ def delfo():
     #print(request.form)
     if not 'novelname' in request.form:
         return '-1'
-    if os.path.isdir('./novel/'+request.form['novelname']): 
-        os.remove('./novel/'+request.form['novelname']+'/info.dat')
-        os.remove('./novel/'+request.form['novelname']+'/chapter_name.dat')
-        os.remove('./novel/'+request.form['novelname']+'/chapter_link.dat')
+    if path.isdir('./novel/'+request.form['novelname']): 
+        remove('./novel/'+request.form['novelname']+'/info.dat')
+        remove('./novel/'+request.form['novelname']+'/chapter_name.dat')
+        remove('./novel/'+request.form['novelname']+'/chapter_link.dat')
         novellist = pickle.load(open('./novel/list.dat','rb'))
         if request.form['novelname'] in novellist:
             novellist.remove(request.form['novelname'])
@@ -327,7 +323,7 @@ def config():
                 pickle.dump(setting, open('./setting.dat', "wb"))
                 return '0'
             elif request.form['access'] == 'saveconfig':
-                string = urllib.parse.unquote(request.form['config'])
+                string = unquote(request.form['config'])
                 #print (string)
                 fo = open("./config.ini", "wb")
                 fo.write(string.encode('utf8'))
@@ -355,5 +351,5 @@ def send_img(path):
     return send_from_directory('./webui/img', path)
     
 if __name__ == '__main__':
-    PORT = int(os.getenv('PORT', 5000))
+    PORT = int(getenv('PORT', 5000))
     app.run(host='0.0.0.0',port=PORT, debug=True)
