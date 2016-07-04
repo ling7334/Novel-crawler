@@ -42,7 +42,7 @@ def Search_By_ID(novelname,id):
     try:
         url = eval(string)                                               #获取小说页面链接
     except:
-        return -1
+        return -2
     if not url.startswith('http'):
         url = opts["url"] + url                                          #构建小说页面链接
     # try:
@@ -182,7 +182,7 @@ def Save_Content(noveldata):
     novel_list = []
     for novelname in listdir('./novel/'): 
         if path.isfile(DIRDICT['noveldata'](novelname)): 
-            novel_list.append(item)
+            novel_list.append(novelname)
     pickle.dump(novel_list, open(DIRDICT['novellist'], "wb"))
 
     #--------------------------------------------------写入小说目录

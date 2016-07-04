@@ -4,6 +4,7 @@
 #import shutil
 import usrlib
 import pickle
+import threading
 from urllib.parse import unquote
 from os import (path,mkdir,remove,getenv)
 from flask import (request,jsonify,Flask,send_from_directory,render_template)
@@ -225,10 +226,12 @@ def Search():
         #print(request.form['novelname'],request.form['id'])
         url = usrlib.Search_By_ID(request.form['novelname'],request.form['id'])
         if url == -1:
-            return '-1'
+            return 'URL_ERROR'
+        elif url == -2:
+            return 'SEARCH_ERROR'
         noveldata = usrlib.Get_Novel_Info(url,request.form['id'])
         if noveldata == -1:
-            return '-1'
+            return 'DATA_ERROR'
         return jsonify(noveldata)
     else:
         html = open('./webui/search.html',encoding='utf8').read()
@@ -237,7 +240,7 @@ def Search():
 @app.route('/retrieve', methods=['POST'])
 def Retrieve():
     noveldata = {}
-    #print(request.form)
+    print(request.form)
     
     if not 'id' in request.form:
         return '-1'
@@ -252,9 +255,10 @@ def Retrieve():
         return 'Fail_Downoad_Info'
 
     if 'restrict' in request.form:
-        if request.form['restrict']=='1' and request.form['bookmark'] == '1':
-            Lnoveldata = pickle.load(open('./novel/'+request.form['novelname']+'/info.dat', "rb"))
-            noveldata['lastread'] = Lnoveldata['lastread']
+        if request.form['restrict']=='1':
+            local_noveldata = pickle.load(open('./novel/'+request.form['novelname']+'/info.dat', "rb"))
+            if 'lastread' in local_noveldata:
+                noveldata['lastread'] = local_noveldata['lastread']
             if not usrlib.Save_Content(noveldata):
                 return 'Fail_Save_Info'
             return 'SUCCESS'
@@ -352,4 +356,4 @@ def send_img(path):
     
 if __name__ == '__main__':
     PORT = int(getenv('PORT', 5000))
-    app.run(host='0.0.0.0',port=PORT, debug=True)
+    app.run(host='0.0.0.0',port=PORT, threaded=True, debug=True)
