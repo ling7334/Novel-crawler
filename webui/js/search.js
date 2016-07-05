@@ -12,7 +12,6 @@ function status_des() {
 } 
 
 function Retrieve(id,novelname,restrict){
-    if (query_status == 0){return false}
     if($("#bookmark").prop("checked")){bookmark=1}else{bookmark=0}
     $.ajax({
         type:'post',
