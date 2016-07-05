@@ -240,7 +240,7 @@ def Search():
 @app.route('/retrieve', methods=['POST'])
 def Retrieve():
     noveldata = {}
-    print(request.form)
+    #print(request.form)
     
     if not 'id' in request.form:
         return '-1'
