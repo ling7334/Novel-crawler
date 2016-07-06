@@ -226,12 +226,15 @@ def Search():
         #print(request.form['novelname'],request.form['id'])
         url = usrlib.Search_By_ID(request.form['novelname'],request.form['id'])
         if url == -1:
-            return 'URL_ERROR'
+            rt = {"error" : request.form['id'] + ' 无法连接，请检查设置或网站。' }
+            return jsonify(rt)
         elif url == -2:
-            return 'SEARCH_ERROR'
+            rt = {"error" : request.form['id'] + ' 没有搜索到小说。' }
+            return jsonify(rt)
         noveldata = usrlib.Get_Novel_Info(url,request.form['id'])
         if noveldata == -1:
-            return 'DATA_ERROR'
+            rt = {"error" : request.form['id'] + ' 获取小说错误，请重试。' }
+            return jsonify(rt)
         return jsonify(noveldata)
     else:
         html = open('./webui/search.html',encoding='utf8').read()
@@ -293,16 +296,17 @@ def config():
             setting = {}
             if request.form['access'] == 'getsetting':
                 try:
-                    config = open('./config.ini',encoding='utf8').read()
                     setting = pickle.load(open('./setting.dat', "rb"))
-                    setting['config'] = config
                 except:
                     setting['continuously']= 'true'
                     setting['bold']= 'false'
                     setting['fontcolor'] = "black"
                     setting['bkcolor'] = "#f5f5f5"
                     setting['fontfamily'] = "微软雅黑"
-                    setting['fontsize'] = "30px"
+                    setting['fontsize'] = "19px"
+                try:
+                    setting['config'] = open('./config.ini',encoding='utf8').read()
+                except:
                     setting['config'] = ''
                 return jsonify(setting)
             elif request.form['access'] == 'savesetting':
