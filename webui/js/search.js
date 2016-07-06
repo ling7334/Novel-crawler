@@ -10,6 +10,13 @@ function status_des() {
         if(query_status > 0){$(".progress").hide();}
         else{$(".progress").show();}
 } 
+function fail(str){
+    $("#aldiv")
+    .prepend('<div class="alert alert-dismissible alert-danger"><button class="close" type="button" data-dismiss="alert">&times;</button><strong>'+str+'</strong></div>')
+    .children(':first')
+    .delay(5000)
+    .fadeOut(1000);
+}
 
 function Retrieve(id,novelname,restrict){
     if($("#bookmark").prop("checked")){bookmark=1}else{bookmark=0}
@@ -45,11 +52,12 @@ function getnovel(id){
         data: { "id": idlist.id[i], "novelname": $("#search-novel").val() },
         beforeSend:function(){status_des()},
         complete:function(data){
-            obj = JSON.parse(data.responseText);
-            if (obj.title == null){
-                status_inc();
-                return false;
-            }
+                obj = JSON.parse(data.responseText);
+                if ('error' in obj){
+                        fail(obj.error);
+                        status_inc();
+                        return false;
+                }
             html+='<a class="list-group-item row" style="cursor: pointer;" onclick="Retrieve(\''+ obj.id+'\',\''+obj.title +'\',0)">';
             html+='<h4 class="list-group-item-heading">'+ obj.website + ' - ' + obj.title +'</h4>';
             html+='<span class="list-group-item-text col-md-4">最新章节：'+ obj.latest +'</span>';
@@ -59,7 +67,7 @@ function getnovel(id){
             $(".list-group").append($(html));
             status_inc();
         },
-        error:function(XMLResponse){alert(XMLResponse.responseText);}
+        //error:function(XMLResponse){alert(XMLResponse.responseText);}
     })
 }
 
