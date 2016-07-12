@@ -46,7 +46,7 @@ HTML
 
 ---
 ### 测试
-[__测试版__](http://http://novel.mybluemix.net/)
+[__测试版__](http://novel.mybluemix.net/)
 
 ## 许可证
 [MIT](LICENSE)
