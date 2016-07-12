@@ -12,7 +12,7 @@
 [__源码__](https://codeload.github.com/ling7334/Novel-crawler/zip/master)
 
 ## 安装运行
-1. 下载 [Novel-Crawler.zip](https://github.com/ling7334/Novel-crawler/releases/download/V0.1-alpha-1/Novel-Crawler.zip)
+1. 下载 [dist.zip](https://github.com/ling7334/Novel-crawler/releases/download/V0.1-beta-1/dist.zip)
 2. 解压缩至任意文件夹
 3. 运行start.bat。或运行server.exe，并打开浏览器 [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
