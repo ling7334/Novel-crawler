@@ -1,7 +1,7 @@
 #encoding:UTF-8
-#import json
 #import re
 #import shutil
+import json
 import usrlib
 import pickle
 import threading
@@ -49,7 +49,7 @@ def index():
         content += '<div class="col-md-8">'
         content += '<p><a href="/'+ noveldata['title'] +'/"><strong>' + noveldata['title'] + '</strong></a></p>'
         try:
-            content += '<p  class="text-primary">最新章节：<a href="/'+ noveldata['title'] +'-1">' + noveldata['latest'] + '</a></p>'
+            content += '<p  class="text-primary">最新章节：<a href="/'+ noveldata['title'] +'/'+ repr(len(chapter_name)-1) +'">' + noveldata['latest'] + '</a></p>'
         except:
             content += '<p  class="text-primary">最新章节：</p>'
         try:
@@ -134,7 +134,7 @@ def Novel(novelname):
         if i == lastread:
             chapterlist += '<a class="list-group-item col-lg-4" id="chapterlink" href="' + '/' + novelname + '/' + repr(i) + '">' + item + '<span class="badge">书签</span></a>'
         else:
-            chapterlist += '<a class="list-group-item col-lg-4" id="chapterlist" href="' + '/' + novelname + '/' + repr(i) + '">' + item + '</a>'
+            chapterlist += '<a class="list-group-item col-lg-4" id="chapterlink" href="' + '/' + novelname + '/' + repr(i) + '">' + item + '</a>'
         i=i+1
     html = html.replace('#novelname',novelname)
     html = html.replace('#chapterlist',chapterlist)
@@ -143,19 +143,26 @@ def Novel(novelname):
 @app.route('/<novelname>/<int:chapter>/')
 @app.route('/<novelname>/<int:chapter>', methods=['GET', 'POST'])
 def Chpater(novelname,chapter=None):
+    noveldata ={}
+    novelname = unquote(novelname)
+    try:
+        noveldata = pickle.load(open('./novel/' + novelname + '/info.dat', "rb"))
+        chapter_name = pickle.load(open('./novel/' + novelname + '/chapter_name.dat', "rb"))
+    except:
+        return "咦，这里也没有！"
+
     if request.method == 'POST':
-        noveldata ={}
-        novelname = unquote(novelname)
 
         if chapter is None:
             return '-1'
-        
-        chapter_name = pickle.load(open('./novel/' + novelname + '/chapter_name.dat', "rb"))
-        noveldata = pickle.load(open('./novel/' + novelname + '/info.dat', "rb"))
-        chaptername=chapter_name[chapter]
+
         text = usrlib.Get_Chapter(novelname,chapter)
+        if  text == '未找到章节信息！':
+            return json.dumps({"status":"404","message":text})
+        elif text == '未找到章节！':
+            return json.dumps({"status":"404","message":text})
         text = usrlib.escape(text,2)
-        rt = {"title": chaptername, "description": text}
+        #rt = {"title": chapter_name[chapter], "description": text}
         try:
             lastread = noveldata['lastread']
         except:
@@ -163,7 +170,7 @@ def Chpater(novelname,chapter=None):
         if chapter >= lastread:
             noveldata['lastread'] = chapter
             pickle.dump(noveldata, open('./novel/' + novelname + '/info.dat', "wb"))
-        return jsonify(rt)
+        return json.dumps({"status":"OK","title": chapter_name[chapter], "description": text})
     else:
         reading_setting ={}
         try:
@@ -171,15 +178,7 @@ def Chpater(novelname,chapter=None):
         except:
             reading_setting['continuously'] = 'true'
         continuously = reading_setting['continuously']
-        noveldata = {}
-        novelname = unquote(novelname)
-        try:
-            noveldata = pickle.load(open('./novel/' + novelname + '/info.dat', "rb"))
-        except:
-            return "咦，这里也没有！"
-        chapter_name = pickle.load(open('./novel/' + novelname + '/chapter_name.dat', "rb"))
-        if chapter == -1:
-            chapter= len(chapter_name)-1
+
         if (0 <= chapter <= len(chapter_name)-1):
             chaptername=chapter_name[chapter]
             text = usrlib.Get_Chapter(novelname,chapter)
