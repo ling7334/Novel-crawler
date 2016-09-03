@@ -7,6 +7,12 @@ from urllib import (request,parse)
 from flask import jsonify
 from bs4 import BeautifulSoup
 
+
+HEADERS = {
+     'User-Agent'       : 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'
+     }
+
+
 DIRDICT = {'novellist'      : './novel/list.dat',\
             'noveldata'     : lambda novelname : './novel/' + novelname + '/info.dat',\
             'chapter_name'  : lambda novelname : './novel/' + novelname + '/chapter_name.dat',\
@@ -33,8 +39,10 @@ def Search_By_ID(novelname,id):
     __searchdata = {}
     __searchdata[opts['keyword']] = novelname	                         #构建搜索关键词
     url =opts["slink"] + parse.urlencode(__searchdata, encoding='GBK')   #关键词URL编码
+    data = {}
+    req = request.Request(url, None, HEADERS)
     try:
-        data=request.urlopen(url).read()                                 #读取搜索页面内容
+        data=request.urlopen(req).read()                                 #读取搜索页面内容
     except:
         return -1                                                        #网站无法连接
     soup = BeautifulSoup(data,"html.parser")                             #构建BS数据
@@ -57,8 +65,10 @@ def Get_Novel_Info(url,id):
     id：网站ID'''
     opts = CONFIG[id]
     noveldata = {}
+
+    req = request.Request(url, None, HEADERS)
     try:
-        data = request.urlopen(url).read()                              #读取小说页面内容
+        data = request.urlopen(req).read()                              #读取小说页面内容
     except:
         return -1                                                       #小说页面无法连接
     soup = BeautifulSoup(data,"html.parser")                            #构建BS数据
@@ -157,8 +167,10 @@ def Save_Content(noveldata):
         url = noveldata['content_link']
     else:
         url = noveldata['infolink']
+    
+    req = request.Request(url, None, HEADERS)
     try:
-        data = request.urlopen(url).read()                       #读取目录页面内容
+        data = request.urlopen(req).read()                       #读取目录页面内容
     except:
         return -1                                                #目录页面无法连接
     soup = BeautifulSoup(data,"html.parser")                     #构建BS数据
@@ -224,8 +236,10 @@ def Get_New_Chapter_List(noveldata):
     
     opts = CONFIG[noveldata['id']]
     chapter_name = pickle.load(open(DIRDICT['chapter_name'](noveldata['title']), "rb"))
+
+    req = request.Request(url, None, HEADERS)
     try:
-        data = request.urlopen(url).read()                       #读取目录页面内容
+        data = request.urlopen(req).read()                       #读取目录页面内容
     except:
         return '-1'                                              #目录页面无法连接
     soup = BeautifulSoup(data,"html.parser")                     #构建BS数据
@@ -318,8 +332,9 @@ def Search_Chapter(novelname,index):
                                            #载入网站设置
     opts = CONFIG[noveldata['id']]
     
+    req = request.Request(chapter_link[index], None, HEADERS)
     try:
-        data=request.urlopen(chapter_link[index]).read()         #读取章节内容
+        data=request.urlopen(req).read()         #读取章节内容
     except:
         return -2
     soup = BeautifulSoup(data,"html.parser")                     #构建BS数据
@@ -341,3 +356,6 @@ def Get_Chapter(novelname,index):
         else:
             open(DIRDICT['chapter'](novelname,index), "wb").write(text.encode('utf8'))
     return text
+
+if __name__ == "__main__":
+    pass
