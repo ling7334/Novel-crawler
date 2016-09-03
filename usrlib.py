@@ -39,7 +39,6 @@ def Search_By_ID(novelname,id):
     __searchdata = {}
     __searchdata[opts['keyword']] = novelname	                         #构建搜索关键词
     url =opts["slink"] + parse.urlencode(__searchdata, encoding='GBK')   #关键词URL编码
-    data = {}
     req = request.Request(url, None, HEADERS)
     try:
         data=request.urlopen(req).read()                                 #读取搜索页面内容
