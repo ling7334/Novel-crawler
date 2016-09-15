@@ -179,10 +179,15 @@ def Save_Content(noveldata):
         string = eval(opts['chapter_name'])
         string = str(string)
         chapter_name.append(string)
-        url = eval(opts['chapter_link'])
-        if  not url.startswith('http'):
-            url = opts['url'] + eval(opts['chapter_link'])
-        chapter_link.append(url)
+        link = eval(opts['chapter_link'])
+
+        if  not link.startswith('http'):
+            if (link.split("/")[0] == '') | (len(link.split("/")) <= 1):
+                chapter_url = url + link
+            else:
+                chapter_url = opts['url'] + eval(opts['chapter_link'])
+
+        chapter_link.append(chapter_url)
     #--------------------------------------------------创建小说文件夹
     if not path.exists('./novel/' + noveldata['title'] + '/'):
         makedirs('./novel/' + noveldata['title'] + '/')
@@ -330,9 +335,9 @@ def Search_Chapter(novelname,index):
     
                                            #载入网站设置
     opts = CONFIG[noveldata['id']]
-    
-    req = request.Request(chapter_link[index], None, HEADERS)
+
     try:
+        req = request.Request(chapter_link[index], None, HEADERS)
         data=request.urlopen(req).read()         #读取章节内容
     except:
         return -2
