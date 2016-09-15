@@ -182,7 +182,7 @@ def Save_Content(noveldata):
         link = eval(opts['chapter_link'])
 
         if  not link.startswith('http'):
-            if (link.split("/")[0] == '') | (len(link.split("/")) <= 1):
+            if ((link.split("/")[0] == '') & (len(link.split("/")) <= 2)) | (len(link.split("/")) <= 1):
                 chapter_url = url + link
             else:
                 chapter_url = opts['url'] + eval(opts['chapter_link'])
@@ -257,7 +257,7 @@ def Get_New_Chapter_List(noveldata):
         update_chapter_name.append(string)
         link = eval(opts['chapter_link'])
         if  not link.startswith('http'):
-            if (link.split("/")[0] == '') | (len(link.split("/")) <= 1):
+            if ((link.split("/")[0] == '') & (len(link.split("/")) <= 2)) | (len(link.split("/")) <= 1):
                 chapter_url = url + link
             else:
                 chapter_url = opts['url'] + eval(opts['chapter_link'])

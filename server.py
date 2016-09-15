@@ -264,6 +264,10 @@ def Retrieve():
             if not usrlib.Save_Content(noveldata):
                 return 'Fail_Save_Info'
             return 'SUCCESS'
+        else:
+            if not usrlib.Save_Content(noveldata):
+                return 'Fail_Save_Info'
+            return 'SUCCESS'
     if path.isfile('./novel/'+request.form['novelname']+'/info.dat'): 
         return 'EXIST'
     if not usrlib.Save_Content(noveldata):
