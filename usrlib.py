@@ -186,6 +186,8 @@ def Save_Content(noveldata):
                 chapter_url = url + link
             else:
                 chapter_url = opts['url'] + eval(opts['chapter_link'])
+        else:
+            chapter_url = link
 
         chapter_link.append(chapter_url)
     #--------------------------------------------------创建小说文件夹
@@ -253,10 +255,15 @@ def Get_New_Chapter_List(noveldata):
         string = eval(opts['chapter_name'])
         string = str(string)
         update_chapter_name.append(string)
-        url = eval(opts['chapter_link'])
-        if  not url.startswith('http'):
-            url = opts['url'] + eval(opts['chapter_link'])
-        chapter_link.append(url)
+        link = eval(opts['chapter_link'])
+        if  not link.startswith('http'):
+            if (link.split("/")[0] == '') | (len(link.split("/")) <= 1):
+                chapter_url = url + link
+            else:
+                chapter_url = opts['url'] + eval(opts['chapter_link'])
+        else:
+            chapter_url = link
+        chapter_link.append(chapter_url)
     for chapter in update_chapter_name:
         if not chapter in chapter_name:
             rt.append({"index": update_chapter_name.index(chapter), "name": chapter})
