@@ -9,8 +9,8 @@ from bs4 import BeautifulSoup
 
 
 HEADERS = {
-     'User-Agent'       : 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'
-     }
+     'User-Agent'   :   'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
+}
 
 
 DIRDICT = {'novellist'      : './novel/list.dat',\
@@ -29,22 +29,22 @@ def Get_ID():
         ID.append(item)
     return ID
 
-def Search_By_ID(novelname,id):
+def Search_By_ID(novelname, id):
     '''获取小说信息（目录）页
     novelname：小说名
     id：网站设置ID
     '''
-    
+
     opts = CONFIG[id]
     __searchdata = {}
     __searchdata[opts['keyword']] = novelname	                         #构建搜索关键词
-    url =opts["slink"] + parse.urlencode(__searchdata, encoding='GBK')   #关键词URL编码
+    url = opts["slink"] + parse.urlencode(__searchdata, encoding='GBK')   #关键词URL编码
     req = request.Request(url, None, HEADERS)
     try:
-        data=request.urlopen(req).read()                                 #读取搜索页面内容
+        data = request.urlopen(req).read()                                 #读取搜索页面内容
     except:
         return -1                                                        #网站无法连接
-    soup = BeautifulSoup(data,"html.parser")                             #构建BS数据
+    soup = BeautifulSoup(data, "html.parser")                             #构建BS数据
     string = 'soup.' + opts["novel_link"]
     try:
         url = eval(string)                                               #获取小说页面链接
@@ -78,6 +78,7 @@ def Get_Novel_Info(url,id):
     noveldata['website'] = opts['name']
     
     string = 'soup.'+ opts['title']
+    # print(string)
     noveldata['title'] = eval(string)
     
     try:
@@ -250,8 +251,8 @@ def Get_New_Chapter_List(noveldata):
         return '-1'                                              #目录页面无法连接
     soup = BeautifulSoup(data,"html.parser")                     #构建BS数据
     #--------------------------------------------------抓取小说章节列表
-    string = 'soup.'+opts['chapter_list']
-    for chapter_list in eval(string):
+    comstr = 'soup.'+opts['chapter_list']
+    for chapter_list in eval(comstr):
         string = eval(opts['chapter_name'])
         string = str(string)
         update_chapter_name.append(string)
@@ -345,11 +346,12 @@ def Search_Chapter(novelname,index):
 
     try:
         req = request.Request(chapter_link[index], None, HEADERS)
-        data=request.urlopen(req).read()         #读取章节内容
+        data = request.urlopen(req).read()         #读取章节内容
     except:
         return -2
     soup = BeautifulSoup(data,"html.parser")                     #构建BS数据
-    text = eval('soup.'+ opts['text'])
+    comstr = 'soup.'+ opts['text']
+    text = eval(comstr)
     return text
 
 def Get_Chapter(novelname,index):
@@ -369,4 +371,13 @@ def Get_Chapter(novelname,index):
     return text
 
 if __name__ == "__main__":
+    # print(Search_By_ID('星辰之主','xs111'))
+    opts = CONFIG['bqg5200']
+    __searchdata = {}
+    __searchdata[opts['keyword']] = '寻找走丢的舰娘'
+    url = opts["slink"] + parse.urlencode(__searchdata)
+    print(url)
+    req = request.Request(url, None, HEADERS)
+    data = request.urlopen(req).read()
+    print(data)
     pass
