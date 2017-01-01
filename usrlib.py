@@ -71,6 +71,7 @@ def Get_Novel_Info(url,id):
     except:
         return -1                                                       #小说页面无法连接
     soup = BeautifulSoup(data,"html.parser")                            #构建BS数据
+    # print(data)
     #--------------------------------------------------抓取小说信息
     noveldata['homepage'] = opts['url']
     noveldata['infolink'] = url
@@ -79,7 +80,11 @@ def Get_Novel_Info(url,id):
     
     string = 'soup.'+ opts['title']
     # print(string)
-    noveldata['title'] = eval(string)
+    try:
+        noveldata['title'] = eval(string)
+    except:
+        # print(url,data)
+        return -1
     
     try:
         string = 'soup.'+opts['content_link']
