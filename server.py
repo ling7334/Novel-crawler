@@ -363,4 +363,4 @@ def send_img(path):
     
 if __name__ == '__main__':
     PORT = int(getenv('PORT', 5000))
-    app.run(host='0.0.0.0',port=PORT, threaded=True, debug=True)
+    app.run(host='0.0.0.0',port=PORT, threaded=True, debug=False)
