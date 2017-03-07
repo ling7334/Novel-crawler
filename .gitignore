@@ -72,3 +72,6 @@ target/
 /__snippet__/*
 setting.dat
 start.bat
+
+#Cloudfoundry
+.cfgnore
