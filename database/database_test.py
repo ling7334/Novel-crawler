@@ -12,6 +12,7 @@ def unsetenv(key):
         os.putenv(key, '')
 
 class TestRedis(unittest.TestCase):
+    """Redis测试实例"""
 
     def setUp(self):
         self.r = redis_instance
@@ -20,7 +21,8 @@ class TestRedis(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_log(self):
+    def test_redis(self):
+        """Redis测试实例"""
         unsetenv("REDIS_URL")
         unsetenv("REDIS_PORT")
         self.assertTrue(isinstance(self.r(0), redis.StrictRedis))
@@ -31,7 +33,7 @@ class TestRedis(unittest.TestCase):
         unsetenv("REDIS_PORT")
 
 class TestMYSQL(unittest.TestCase):
-
+    """MYSQL测试实例"""
     def setUp(self):
         self.mysql = mysql_instance
 
@@ -39,6 +41,7 @@ class TestMYSQL(unittest.TestCase):
         pass
 
     def test_mysql(self):
+        """MYSQL测试实例"""
         unsetenv("MYSQL_URL")
         unsetenv("MYSQL_PORT")
         unsetenv("MYSQL_USER")
@@ -55,7 +58,7 @@ class TestMYSQL(unittest.TestCase):
         unsetenv("MYSQL_PWD")
 
 class TestPostgre(unittest.TestCase):
-
+    """PostgreSQL测试实例"""
     def setUp(self):
         self.postgresql = postgresql_instance
 
@@ -63,6 +66,7 @@ class TestPostgre(unittest.TestCase):
         pass
 
     def test_mysql(self):
+        """PostgreSQL测试实例"""
         unsetenv("POSTGRE_HOST")
         unsetenv("POSTGRE_PORT")
         unsetenv("POSTGRE_USER")

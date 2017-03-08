@@ -40,8 +40,8 @@ def postgresql_instance(db=None):
     import contextlib
     import psycopg2
     try:
-        postgre_URL = os.environ['POSTGRE_URL']
-        return contextlib.closing(psycopg2.connect(postgre_URL))
+        postgre_url = os.environ['POSTGRE_URL']
+        return contextlib.closing(psycopg2.connect(postgre_url))
     except KeyError:
         try:
             postgre_host = os.environ['POSTGRE_HOST']
