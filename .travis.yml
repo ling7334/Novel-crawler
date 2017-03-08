@@ -1,4 +1,12 @@
 language: python
+#YAML file (master branch)
+branches:
+  only:
+    - improve
+services:
+  - mysql
+  - redis-server
+  - postgresql
 python:
   - "3.3"
   - "3.4"
@@ -8,5 +16,6 @@ python:
 # command to install dependencies
 #install: "pip install -r requirements.txt"
 install: "pip install -r requirements.txt"
+install: "pip install pytest-cov"
 # command to run tests
-script: python server.py
+script: py.test --cov
