@@ -58,8 +58,8 @@ def postgresql_instance(db=None):
             postgre_user = config.get("postgre", "user")
             postgre_pwd = config.get("postgre", "pwd")
         if postgre_pwd:
-            return contextlib.closing(psycopg2.connect(host=postgre_host, port=postgre_port, user=postgre_user, password=postgre_pwd, dbname=db, charset='utf8'))
-        return contextlib.closing(psycopg2.connect(host=postgre_host, port=postgre_port, user=postgre_user, dbname=db, charset='utf8'))
+            return contextlib.closing(psycopg2.connect(host=postgre_host, port=postgre_port, user=postgre_user, password=postgre_pwd, dbname=db))
+        return contextlib.closing(psycopg2.connect(host=postgre_host, port=postgre_port, user=postgre_user, dbname=db))
 
 def redis_instance(db=0):
     '''
@@ -107,5 +107,5 @@ def mysql_instance(db=None):
         mysql_user = config.get("mysql", "user")
         mysql_pwd = config.get("mysql", "pwd")
     if mysql_pwd:
-        return contextlib.closing(pymysql.connect(host=mysql_host, port=mysql_port, user=mysql_user, passwd=mysql_pwd, db=db))
-    return contextlib.closing(pymysql.connect(host=mysql_host, port=mysql_port, user=mysql_user, db=db))
+        return contextlib.closing(pymysql.connect(host=mysql_host, port=mysql_port, user=mysql_user, passwd=mysql_pwd, db=db, charset='utf8'))
+    return contextlib.closing(pymysql.connect(host=mysql_host, port=mysql_port, user=mysql_user, db=db, charset='utf8'))
