@@ -2,7 +2,7 @@ language: python
 #YAML file (master branch)
 branches:
   only:
-    - improve
+    - /.*/
 services:
   - mysql
   - redis-server
