@@ -1,4 +1,6 @@
-#扒虫 - Novel crawler
+# 扒虫 - Novel crawler
+[![Build Status](https://travis-ci.org/ling7334/Novel-crawler.svg?branch=improve)](https://travis-ci.org/ling7334/Novel-crawler)
+
 ![扒虫](/icon.png)
 ===
 
