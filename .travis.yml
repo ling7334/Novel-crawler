@@ -16,6 +16,6 @@ install:
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 script: 
-  - coverage run database/database_test.py
+  - py.test --cov
 after_success:
   - codecov
