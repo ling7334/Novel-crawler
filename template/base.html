@@ -2,11 +2,12 @@
 <html lang="zh-CN">
 
 <head>
+    {% block head %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{title}}</title>
+    <title>{% block title %}{% endblock %}</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{{url_for('static/css', filename='bootstrap.min.css')}}" rel="stylesheet">
@@ -15,6 +16,7 @@
     <link href="{{url_for('static/css', filename='custom_theme.css')}}" rel="stylesheet">
     
     {% block css %}{% endblock %}
+    {% endblock %}
 </head>
 
 <body role="document">
@@ -57,9 +59,7 @@
     <script src="/js/booktool.js"></script>
     {% block js %}{% endblock %}
     <!--信息提示框-->
-    {% for message in get_flashed_messages() %}
     <div id="aldiv" style="position: fixed; bottom: 80px; right: 30px; opacity: 1;">{{ message }}</div>
-    {% endfor %}
 </body>
 
 </html>
