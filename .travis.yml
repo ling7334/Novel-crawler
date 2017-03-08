@@ -16,5 +16,6 @@ install:
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 script: 
-  - py.test --cov Novel-crawler test
-  - codecov --token=83556682-7f4c-40d4-82e8-5eb692971747
+  - py.test --cov Novel-crawler
+after_success:
+  - codecov
