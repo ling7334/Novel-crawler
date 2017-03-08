@@ -48,6 +48,7 @@ def postgresql_instance(db=None):
             postgre_port = os.environ['POSTGRE_PORT']
             postgre_user = os.environ['POSTGRE_USER']
             postgre_pwd = os.environ['POSTGRE_PWD']
+            postgre_db = os.environ['POSTGRE_DB']
         except KeyError:
             import configparser
             config = configparser.ConfigParser()
@@ -57,9 +58,10 @@ def postgresql_instance(db=None):
             postgre_port = int(config.get("postgre", "port"))
             postgre_user = config.get("postgre", "user")
             postgre_pwd = config.get("postgre", "pwd")
+            postgre_db = config.get("postgre", "db")
         if postgre_pwd:
-            return contextlib.closing(psycopg2.connect(host=postgre_host, port=postgre_port, user=postgre_user, password=postgre_pwd, dbname=db))
-        return contextlib.closing(psycopg2.connect(host=postgre_host, port=postgre_port, user=postgre_user, dbname=db))
+            return contextlib.closing(psycopg2.connect(host=postgre_host, port=postgre_port, user=postgre_user, password=postgre_pwd, dbname=postgre_db))
+        return contextlib.closing(psycopg2.connect(host=postgre_host, port=postgre_port, user=postgre_user, dbname=postgre_db))
 
 def redis_instance(db=0):
     '''
