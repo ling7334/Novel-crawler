@@ -80,6 +80,6 @@ class TestPostgre(unittest.TestCase):
         unsetenv("POSTGRE_USER")
         unsetenv("POSTGRE_PWD")
         unsetenv("POSTGRE_DB")
-        os.environ["POSTGRE_URL"] = "postgres://postgre@127.0.0.1:5432/travis_ci_test"
+        os.environ["POSTGRE_URL"] = "postgres://postgres@127.0.0.1:5432/travis_ci_test"
         self.assertTrue(isinstance(self.postgresql(), contextlib.closing))
         unsetenv("POSTGRE_URL")
