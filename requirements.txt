@@ -3,3 +3,6 @@
 
 flask==0.11
 beautifulsoup4==4.4.1
+redis==2.10.5
+pymysql==0.7.9
+psycopg2==2.7
