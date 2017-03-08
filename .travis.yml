@@ -10,8 +10,11 @@ python:
 #install: "pip install -r requirements.txt"
 install:
   - pip install pytest-cov
+  - pip install codecov
   - pip install -r requirements.txt
 # command to run tests
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
-script: py.test --cov
+script: 
+  - py.test --cov jedi
+  - codecov --token=83556682-7f4c-40d4-82e8-5eb692971747
