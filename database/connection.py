@@ -107,5 +107,5 @@ def mysql_instance(db=None):
         mysql_user = config.get("mysql", "user")
         mysql_pwd = config.get("mysql", "pwd")
     if mysql_pwd:
-        return contextlib.closing(pymysql.connect(host=mysql_host, port=mysql_port, user=mysql_user, passwd=mysql_pwd, db=db, charset='utf8'))
-    return contextlib.closing(pymysql.connect(host=mysql_host, port=mysql_port, user=mysql_user, db=db, charset='utf8'))
+        return contextlib.closing(pymysql.connect(host=mysql_host, port=mysql_port, user=mysql_user, passwd=mysql_pwd, db=db))
+    return contextlib.closing(pymysql.connect(host=mysql_host, port=mysql_port, user=mysql_user, db=db))
