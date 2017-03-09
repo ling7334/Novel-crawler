@@ -65,7 +65,7 @@ class TestMYSQL(unittest.TestCase):
         unsetenv("MYSQL_PORT")
         unsetenv("MYSQL_USER")
         unsetenv("MYSQL_PWD")
-        os.environ["MYSQL_URL"] = "mysql://root@127.0.0.1:3306/"
+        os.environ["MYSQL_URL"] = "mysql+pymsql://root:@localhost/"
         self.assertTrue(isinstance(self.mysql(), contextlib.closing))
         unsetenv("MYSQL_URL")
 
