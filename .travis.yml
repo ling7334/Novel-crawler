@@ -11,6 +11,9 @@ python:
 install:
   - pip install pytest-cov
   - pip install codecov
+  - pip install pymysql
+  - pip install psycopg2
+  - pip install redis
   - pip install -r requirements.txt
 # command to run tests
 before_script:
