@@ -30,11 +30,12 @@ def postgresql_instance(db=None):
     '''
     访问config.ini配置文件或系统环境变量中定义的PostgreSQL数据库，
     返回一个contextlib.closing类，
-    使用时配合With语句使用，使用结束后，隐式地执行了文件句柄的关闭。
     contextlib是为了加强with语句，提供上下文机制的模块，它是通过Generator实现的。
+    使用时配合With语句使用，使用结束后，隐式地执行了文件句柄的关闭。
+
     例:\n
         with postgresql_instance() as con:
-            with con as cur:
+            with con, con.cursor() as cur:
                 cur.execute()
     '''
     import contextlib
@@ -43,25 +44,26 @@ def postgresql_instance(db=None):
         postgre_url = os.environ['POSTGRE_URL']
         return contextlib.closing(psycopg2.connect(postgre_url))
     except KeyError:
-        try:
-            postgre_host = os.environ['POSTGRE_HOST']
-            postgre_port = os.environ['POSTGRE_PORT']
-            postgre_user = os.environ['POSTGRE_USER']
-            postgre_pwd = os.environ['POSTGRE_PWD']
-        except KeyError:
-            import configparser
-            config = configparser.ConfigParser()
-            config.read("config.ini")
+        pass
+    try:
+        postgre_host = os.environ['POSTGRE_HOST']
+        postgre_port = os.environ['POSTGRE_PORT']
+        postgre_user = os.environ['POSTGRE_USER']
+        postgre_pwd = os.environ['POSTGRE_PWD']
+    except KeyError:
+        import configparser
+        config = configparser.ConfigParser()
+        config.read("config.ini")
 
-            postgre_host = config.get("postgre", "host")
-            postgre_port = int(config.get("postgre", "port"))
-            postgre_user = config.get("postgre", "user")
-            postgre_pwd = config.get("postgre", "pwd")
-        if db is None:
-            db = postgre_user
-        if postgre_pwd:
-            return contextlib.closing(psycopg2.connect(host=postgre_host, port=postgre_port, user=postgre_user, password=postgre_pwd, dbname=db))
-        return contextlib.closing(psycopg2.connect(host=postgre_host, port=postgre_port, user=postgre_user, dbname=db))
+        postgre_host = config.get("postgre", "host")
+        postgre_port = int(config.get("postgre", "port"))
+        postgre_user = config.get("postgre", "user")
+        postgre_pwd = config.get("postgre", "pwd")
+    if db is None:
+        db = postgre_user
+    if postgre_pwd:
+        return contextlib.closing(psycopg2.connect(host=postgre_host, port=postgre_port, user=postgre_user, password=postgre_pwd, dbname=db))
+    return contextlib.closing(psycopg2.connect(host=postgre_host, port=postgre_port, user=postgre_user, dbname=db))
 
 def redis_instance(db=0):
     '''
@@ -70,8 +72,14 @@ def redis_instance(db=0):
     '''
     import redis
     try:
-        redis_host = os.environ['REDIS_URL']
+        redis_url = os.environ['REDIS_URL']
+        return redis.StrictRedis.from_url(redis_url)
+    except KeyError:
+        pass
+    try:
+        redis_host = os.environ['REDIS_HOST']
         redis_port = int(os.environ['REDIS_PORT'])
+        redis_pwd = os.environ['REDIS_PWD']
     except KeyError:
         import configparser
         config = configparser.ConfigParser()
@@ -79,14 +87,17 @@ def redis_instance(db=0):
 
         redis_host = config.get("redis", "host")
         redis_port = int(config.get("redis", "port"))
+        redis_pwd = int(config.get("redis", "pwd"))
+    if redis_pwd:
+        return redis.StrictRedis(host=redis_host, port=redis_port, password=redis_pwd, db=db)
     return redis.StrictRedis(host=redis_host, port=redis_port, db=db)
 
 def mysql_instance(db=None):
     '''
     访问config.ini配置文件或系统环境变量中定义的MYSQL数据库，
     返回一个contextlib.closing类，
-    使用时配合With语句使用，使用结束后，隐式地执行了文件句柄的关闭。
     contextlib是为了加强with语句，提供上下文机制的模块，它是通过Generator实现的。
+    使用时配合With语句使用，使用结束后，隐式地执行了文件句柄的关闭。
     例:\n
         with mysql_instance() as con:
             with con as cur:
@@ -95,7 +106,12 @@ def mysql_instance(db=None):
     import contextlib
     import pymysql
     try:
-        mysql_host = os.environ['MYSQL_URL']
+        mysql_url = os.environ['MYSQL_URL']
+        return contextlib.closing(pymysql.connect(mysql_url))
+    except KeyError:
+        pass
+    try:
+        mysql_host = os.environ['MYSQL_HOST']
         mysql_port = int(os.environ['MYSQL_PORT'])
         mysql_user = os.environ['MYSQL_USER']
         mysql_pwd = os.environ['MYSQL_PWD']
