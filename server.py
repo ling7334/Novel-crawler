@@ -345,22 +345,17 @@ def config():
         html = open('./webui/config.html',encoding='utf8').read()
         return html
 
-@app.route('/favicon.ico')
+@app.route('/bookcase')
 def send_ico():
-    return send_from_directory('./webui/', 'favicon.ico')
-@app.route('/js/<path:path>')
-def send_js(path):
-    return send_from_directory('./webui/js', path)
-@app.route('/css/<path:path>')
-def send_css(path):
-    return send_from_directory('./webui/css', path)
-@app.route('/fonts/<path:path>')
-def send_fonts(path):
-    return send_from_directory('./webui/fonts', path)
-@app.route('/img/<path:path>')
-def send_img(path):
-    return send_from_directory('./webui/img', path)
-    
+    return render_template('bookcase.html')
+
+# @app.errorhandler(404) 
+# def page_not_found(error):
+#     return render_template("404.html")
+# @app.errorhandler(500) 
+# def server_error(error):
+#     return render_template("500.html")
+
 if __name__ == '__main__':
     PORT = int(getenv('PORT', 5000))
     app.run(host='0.0.0.0',port=PORT, threaded=True, debug=False)

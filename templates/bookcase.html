@@ -10,7 +10,7 @@
         {% if novel.image %}
         <img class="col-md-4" width="120" height="150" style="max-width: 120px; max-height: 150px;" alt="" src="{{novel.image}}" border="0">
         {% else %}
-        <img class="col-md-4" width="120" height="150" style="max-width: 120px; max-height: 150px;" alt="" src="{{url_for('static/img', filename='default.jpg')}}" border="0">
+        <img class="col-md-4" width="120" height="150" style="max-width: 120px; max-height: 150px;" alt="" src="{{url_for('static', filename='img/default.jpg')}}" border="0">
         {% endif %}
         <div class="col-md-8">
             <p><a href="/{{novel.title}}/"><strong>{{novel.title}}</strong></a></p>
