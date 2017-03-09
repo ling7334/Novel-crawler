@@ -87,7 +87,7 @@ def redis_instance(db=0):
 
         redis_host = config.get("redis", "host")
         redis_port = int(config.get("redis", "port"))
-        redis_pwd = int(config.get("redis", "pwd"))
+        redis_pwd = config.get("redis", "pwd")
     if redis_pwd:
         return redis.StrictRedis(host=redis_host, port=redis_port, password=redis_pwd, db=db)
     return redis.StrictRedis(host=redis_host, port=redis_port, db=db)
