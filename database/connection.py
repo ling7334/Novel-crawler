@@ -105,11 +105,11 @@ def mysql_instance(db=None):
     '''
     import contextlib
     import pymysql
-    try:
-        mysql_url = os.environ['MYSQL_URL']
-        return contextlib.closing(pymysql.connect(mysql_url))
-    except KeyError:
-        pass
+    # try:
+    #     mysql_url = os.environ['MYSQL_URL']
+    #     return contextlib.closing(pymysql.connect(mysql_url))
+    # except KeyError:
+    #     pass
     try:
         mysql_host = os.environ['MYSQL_HOST']
         mysql_port = int(os.environ['MYSQL_PORT'])
