@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}书柜{% endblock %}
+{% block css %}{% endblock %}
+{% block head %}{{ super() }}{% endblock %}
+{% block javascript %}{% endblock %}
+{% block body %}
+<div class="container row center-block">
+    {% for novel in novellist %}
+    <div class="col-md-5 well row">
+        {% if novel.image %}
+        <img class="col-md-4" width="120" height="150" style="max-width: 120px; max-height: 150px;" alt="" src="{{novel.image}}" border="0">
+        {% else %}
+        <img class="col-md-4" width="120" height="150" style="max-width: 120px; max-height: 150px;" alt="" src="{{url_for('static/img', filename='default.jpg')}}" border="0">
+        {% endif %}
+        <div class="col-md-8">
+            <p><a href="/{{novel.title}}/"><strong>{{novel.title}}</strong></a></p>
+            {% if novel.latest %}
+            <p  class="text-primary">最新章节：<a href="/{{novel.title}}/{{novel.latest.id}}">{{novel.latest.name}}</a></p>
+            {% else %}
+            <p  class="text-primary">最新章节：</p>
+            {% endif %}
+            {% if novel.lastread %}
+            <p  class="text-primary">最后阅读：<a href="/{{novel.title}}/{{novel.lastread.id}}/">{{novel.lastread.name}}</a></p>
+            {% else %}
+            <p  class="text-primary">最后阅读：</p>
+            {% endif %}
+        </div>
+    </div>
+    {% if novel.index%2==0 %}
+    <div class="col-md-2"></div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

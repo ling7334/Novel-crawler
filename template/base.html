@@ -11,7 +11,8 @@
 
     <!-- Bootstrap core CSS -->
     <link href="{{url_for('static/css', filename='bootstrap.min.css')}}" rel="stylesheet">
-
+    <!-- Bootstrap switch CSS -->
+    <link href="{{url_for('static/css', filename='bootstrap-switch.min.css')}}" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="{{url_for('static/css', filename='custom_theme.css')}}" rel="stylesheet">
     
@@ -51,11 +52,12 @@
     </div>
 
     <!-- Placed at the end of the document so the pages load faster -->
-    <!-- Bootstrap core JavaScript -->
+    <!-- jquery core JavaScript -->
     <script src="{{url_for('static/js', filename='jquery.min.js')}}"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/topcontrol.js"></script>
-    <script src="/js/booktool.js"></script>
+    <!-- bootstrap core JavaScript -->
+    <script src="{{url_for('static/js', filename='bootstrap.min.js')}}"></script>
+    <!-- bootstrap switch JavaScript -->
+    <script src="{{url_for('static/js', filename='bootstrap-switch.min.js')}}"></script>
     {% block js %}{% endblock %}
     <!--信息提示框-->
     <div id="aldiv" style="position: fixed; bottom: 80px; right: 30px; opacity: 1;">{{ message }}</div>

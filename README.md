@@ -4,9 +4,9 @@
 ![扒虫](/icon.png)
 ===
 
-这是一个用Python写的小说爬虫软件。
+这是一个用Python写的小说爬虫。
 
-欢迎各位提出意见和指正，帮助完善软件。 [__提出问题反馈__](https://github.com/ling7334/Novel-crawler/issues/new)
+欢迎各位提出意见和指正，帮助完善。 [__提出问题反馈__](https://github.com/ling7334/Novel-crawler/issues/new)
 
 ---
 ## 依赖
@@ -26,7 +26,7 @@ HTML
 
 ---
 ### 测试
-[__测试版__](http://novelcrawler.hreokuapp.com/)
+[__测试版__](https://novelcrawler.herokuapp.com/)
 
 ## 许可证
 [MIT](LICENSE)
