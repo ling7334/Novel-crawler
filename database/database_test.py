@@ -26,12 +26,15 @@ class TestRedis(unittest.TestCase):
         unsetenv("REDIS_URL")
         unsetenv("REDIS_HOST")
         unsetenv("REDIS_PORT")
+        unsetenv("REDIS_PWD")
         self.assertTrue(isinstance(self.r(0), redis.StrictRedis))
         os.environ["REDIS_HOST"] = "localhost"
         os.environ["REDIS_PORT"] = "6379"
+        os.environ["REDIS_PWD"] = ""
         self.assertTrue(isinstance(self.r(0), redis.StrictRedis))
         unsetenv("REDIS_HOST")
         unsetenv("REDIS_PORT")
+        unsetenv("REDIS_PWD")
         os.environ["REDIS_URL"] = "redis://localhost:6379/0"
         self.assertTrue(isinstance(self.r(), redis.StrictRedis))
         unsetenv("REDIS_URL")
