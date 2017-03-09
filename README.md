@@ -1,5 +1,5 @@
 # 扒虫 - Novel crawler
-[![Build Status](https://travis-ci.org/ling7334/Novel-crawler.svg?branch=improve)](https://travis-ci.org/ling7334/Novel-crawler)[![codecov](https://codecov.io/gh/ling7334/Novel-crawler/branch/improve/graph/badge.svg)](https://codecov.io/gh/ling7334/Novel-crawler)
+[![Build Status](https://travis-ci.org/ling7334/Novel-crawler.svg?branch=improve)](https://travis-ci.org/ling7334/Novel-crawler)[![codecov](https://codecov.io/gh/ling7334/Novel-crawler/branch/improve/graph/badge.svg)](https://codecov.io/gh/ling7334/Novel-crawler)[![Code Issues](https://www.quantifiedcode.com/api/v1/project/6c089110709a4dc6b0be6f76c45396d3/snapshot/origin:improve:HEAD/badge.svg)](https://www.quantifiedcode.com/app/project/6c089110709a4dc6b0be6f76c45396d3)
 
 ![扒虫](/icon.png)
 ===
