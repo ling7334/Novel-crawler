@@ -57,7 +57,7 @@ def postgresql_instance(db=None):
             postgre_port = int(config.get("postgre", "port"))
             postgre_user = config.get("postgre", "user")
             postgre_pwd = config.get("postgre", "pwd")
-        if db==None:
+        if db is None:
             db = postgre_user
         if postgre_pwd:
             return contextlib.closing(psycopg2.connect(host=postgre_host, port=postgre_port, user=postgre_user, password=postgre_pwd, dbname=db))
