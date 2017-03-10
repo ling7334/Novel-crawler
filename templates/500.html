@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>500</title>
+
+    <style>
+    body {overflow: hidden;}
+    #girl {position: absolute; margin-left: auto; margin-right: auto; width: 900px; top: 10px;}
+    #description {position: absolute; margin-left: auto; margin-right: auto; width: 200px; height: 100px; top: 100px; font-size: 28px;}
+    </style>
+</head>
+
+<body role="document">
+
+    <img id="girl" class="js-plaxify" data-invert=true data-xrange="10" data-yrange="10" src="{{url_for('static', filename='img/500girl.png')}}">
+    <div id="description" class="js-plaxify" data-invert=false data-xrange="20" data-yrange="20" >啊，不行，要坏掉了~</div>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- jquery core JavaScript -->
+    <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/plaxify.js')}}"></script>
+    <script>
+        var flaxenable = function(){
+            wd = ($(document).width() - 900) / 2;
+            $("#girl").css("left", wd)
+            $("#description").css("left", wd-100)
+            var layers = $('.js-plaxify')
+            $.each(layers, function(index, layer){
+                $(layer).plaxify({
+                    xRange: $(layer).data('xrange') || 0, // 水平移动范围
+                    yRange: $(layer).data('yrange') || 0, // 竖直移动范围
+                    invert: $(layer).data('invert') || false, // 是否反向
+                    background: false // 是否使用背景定位实现位移
+                })
+            })
+
+            $.plax.enable(); // 开启视差效果，activityTarget：视差容器
+        }
+    $(window).load(function() {
+        flaxenable();
+    })
+
+    $(window).resize(function() {
+        flaxenable();
+    })
+    </script>
+</body>
+
+
+</html>
