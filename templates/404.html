@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>404</title>
+
+    <style>
+    body {overflow: hidden;}
+    #girl {position: absolute; margin-left: auto; margin-right: auto; width: 900px; top: 10px;}
+    </style>
+</head>
+
+<body role="document">
+
+    <img alt id="girl" class="js-plaxify" data-invert=true data-xrange="10" data-yrange="10" src="{{url_for('static', filename='img/girl.png')}}">
+    完全找不到啊，唉嘿~
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- jquery core JavaScript -->
+    <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/plaxify.js')}}"></script>
+    <script>
+    $(window).load(function() {
+        wd = ($(document).width() - 900) / 2;
+            $("#girl").css("left", wd)
+        var layers = $('.js-plaxify')
+        $.each(layers, function(index, layer){
+            $(layer).plaxify({
+                xRange: $(layer).data('xrange') || 0, // 水平移动范围
+                yRange: $(layer).data('yrange') || 0, // 竖直移动范围
+                invert: $(layer).data('invert') || false, // 是否反向
+                background: false // 是否使用背景定位实现位移
+            })
+        })
+
+        $.plax.enable(); // 开启视差效果，activityTarget：视差容器
+    })
+
+    $(window).resize(function() {
+        wd = ($(document).width() - 900) / 2;
+        $("#girl").css("left", wd)
+        var layers = $('.js-plaxify')
+        $.each(layers, function(index, layer){
+            $(layer).plaxify({
+                xRange: $(layer).data('xrange') || 0, // 水平移动范围
+                yRange: $(layer).data('yrange') || 0, // 竖直移动范围
+                invert: $(layer).data('invert') || false, // 是否反向
+                background: false // 是否使用背景定位实现位移
+            })
+        })
+
+        $.plax.enable(); // 开启视差效果，activityTarget：视差容器
+    })
+    </script>
+</body>
+
+
+</html>
