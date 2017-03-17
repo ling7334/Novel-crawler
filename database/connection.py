@@ -77,9 +77,12 @@ def redis_instance(db=0):
     except KeyError:
         pass
     try:
+        redis_pwd = os.environ['REDIS_PWD']
+    except Exception:
+        redis_pwd = None
+    try:
         redis_host = os.environ['REDIS_HOST']
         redis_port = int(os.environ['REDIS_PORT'])
-        redis_pwd = os.environ['REDIS_PWD']
     except KeyError:
         import configparser
         config = configparser.ConfigParser()
