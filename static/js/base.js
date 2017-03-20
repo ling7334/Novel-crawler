@@ -1,3 +1,13 @@
+var flash_message = function (category, message) {
+    // category为消息类别，可为info，success，danger
+    // message为消息内容
+    $("#message")
+    .prepend('<div class="alert alert-dismissible alert-'+category+'"><button class="close" type="button" data-dismiss="alert">&times;</button><strong>'+message+'</strong></div>')
+    .children(':first')
+    .delay(5000)
+    .fadeOut(1000);
+}
+
 $(document).ready(function(){
     var loading = 0;
 
@@ -16,7 +26,7 @@ $(document).ready(function(){
             return false;
         });
     });
-
+    // 当loading大于0时显示进度条
     if(loading <= 0){
         loading=0;
         $("#loading").hide();
