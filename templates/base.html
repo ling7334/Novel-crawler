@@ -16,7 +16,7 @@
     <!-- Fonts Awesome CSS -->
     <link href="{{url_for('static', filename='css/font-awesome.min.css')}}" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <!--<link href="{{url_for('static', filename='css/custom_theme.css')}}" rel="stylesheet">-->
+    <link href="{{url_for('static', filename='css/custom_theme.css')}}" rel="stylesheet">
     
     {% block css %}{% endblock %}
     {% endblock %}
@@ -77,7 +77,7 @@
     <!-- bootstrap switch JavaScript -->
     <script src="{{url_for('static', filename='js/bootstrap-switch.min.js')}}"></script>
 
-    {% block js %}{% endblock %}
+    {% block javascript %}{% endblock %}
 
     <script src="{{url_for('static', filename='js/base.js')}}"></script>
 </body>
