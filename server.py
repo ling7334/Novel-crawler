@@ -14,6 +14,10 @@ app = Flask(__name__)
 def index():
     return render_template('bookcase.html')
 
+@app.route('/search')
+def search():
+    return render_template('search.html')
+
 @app.route('/favicon.ico')
 def ico():
     return send_from_directory('static','img/favicon.ico')
@@ -21,9 +25,9 @@ def ico():
 @app.errorhandler(404) 
 def page_not_found(error):
     return render_template("404.html"), 404
-# @app.errorhandler(500) 
-# def server_error(error):
-#     return render_template("500.html"), 500
+@app.errorhandler(500) 
+def server_error(error):
+    return render_template("500.html"), 500
 
 if __name__ == '__main__':
     PORT = int(getenv('PORT', 5000))
