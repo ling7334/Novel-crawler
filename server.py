@@ -18,6 +18,11 @@ def index():
 def search():
     return render_template('search.html')
 
+@app.route('/book/<novelname>')
+def book(novelname):
+    #TODO: 丛数据库读出小说信息及章节信息
+    return render_template('book.html')
+
 @app.route('/favicon.ico')
 def ico():
     return send_from_directory('static','img/favicon.ico')

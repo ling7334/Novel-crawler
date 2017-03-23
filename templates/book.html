@@ -1,45 +1,16 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>#novelname</title>
-
-  <!-- Bootstrap core CSS -->
-  <link href="/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Custom styles for this template -->
-  <link href="/css/custom_theme.css" rel="stylesheet">
+{% extends "base.html" %}
+{% block title %}{{novel.name}}{% endblock %}
+{% block head %}{{ super() }}{% endblock %}
+{% block css %}
   <style>
     #chapterlink{overflow:hidden;white-space: nowrap;}
   </style>
-</head>
-
-<body role="document">
-
-  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="/">扒虫</a>
-      </div>
-
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav">
-          <li><a href="/">书柜<span class="glyphicon glyphicon-book"></span></a></li>
-          <li><a href="/search">搜书<span class="glyphicon glyphicon-search"></span></a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="/config"><span class="glyphicon glyphicon-cog"></span></a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-<div class="container">
-    <h1 align="center">#novelname</h1>
+{% endblock %}
+{% block javascript %}
+  <script src="{{url_for('static', filename='js/book.js')}}"></script>
+{% endblock %}
+{% block body %}
+<h1 align="center">{{novel.name}}</h1>
 
     <div class="pull-right">
         <ul class="nav nav-pills">
@@ -60,38 +31,22 @@
     <div class="well row">
       <img class="col-md-4"  width="120" height="150"  style="max-width: 120px; max-height: 150px;" alt="" src="#image" border="0">
       <div class="col-md-8">
-        <p><strong>#description</strong></p>
+        <p><strong>{{novel.description}}</strong></p>
         <p class="text-muted">
-          <span>作者：</span><span id="author">#author</span><span> | </span>
-          <span>分类：</span><span id="category">#category</span><span> | </span>
-          <span>状态：</span><span id="status">#status</span><span> | </span>
-          <span>更新时间：</span><span id="update">#update</span><span> | </span>
-          <span>来源：</span><span><a  id="resource" href="#resource">#resourceid</a></span><span> | </span>
+          <span>作者：</span><span id="author">{{novel.author}}</span><span> | </span>
+          <span>分类：</span><span id="category">{{novel.category}}</span><span> | </span>
+          <span>状态：</span><span id="status">{{novel.status}}</span><span> | </span>
+          <span>更新时间：</span><span id="update">{{novel.update}}</span><span> | </span>
+          <span>来源：</span><span><a  id="resource" href="{{novel.resourcehref}}">{{novel.resource}}</a></span><span> | </span>
         </p>
       </div>
     </div>
 
     <div class="list-group row">
-        #chapterlist
-    </ul>
+      {% for chapter in chapters %}
+       <a class="list-group-item col-lg-4" id="chapterlink" href="{{chapter.link}}">{{chapter.name}}
+       {% if chapter.bookmark%}<span class="badge">书签</span>{% endif %}</a>
+      {% endfor %}
     </div>
 </div>
-  
-  <div class="footer">
-    <hr>
-    <p align="center">免责声明:本软件内容皆来源于网络，软件作者不负任何责任。<a href="https://github.com/ling7334/Novel-crawler">@ling7334</a></p>
-  </div>
-
-  <!-- Placed at the end of the document so the pages load faster -->
-  <!-- Bootstrap core JavaScript
-    ================================================== -->
-  <script src="/js/jquery.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
-  <script src="/js/topcontrol.js"></script>
-  <script src="/js/booktool.js"></script>
-
-<div id = "aldiv" style="position: fixed; bottom: 80px; right: 30px; opacity: 1;"></div>
-
-</body>
-
-</html>
+{% endblock %}
