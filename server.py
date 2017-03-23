@@ -20,8 +20,8 @@ def search():
 
 @app.route('/book/<novelname>')
 def book(novelname):
-    #TODO: 丛数据库读出小说信息及章节信息
-    return render_template('book.html')
+    #TODO: 从数据库读出小说信息及章节信息
+    return render_template('book.html', novel=None, chapters=None)
 
 @app.route('/favicon.ico')
 def ico():
