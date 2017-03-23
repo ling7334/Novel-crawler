@@ -29,7 +29,8 @@
       </div>
 
     <div class="well row">
-      <img class="col-md-4"  width="120" height="150"  style="max-width: 120px; max-height: 150px;" alt="" src="{{novel.image}}" border="0">
+      <img class="col-md-4"  width="120" height="150"  style="max-width: 120px; max-height: 150px;" alt=""
+      src="{% if novel.image %}{{novel.image}}{% else %}{{url_for('static', filename='img/default.jpg')}}{% endif %}" border="0">
       <div class="col-md-8">
         <p><strong>{{novel.description}}</strong></p>
         <p class="text-muted">
@@ -44,7 +45,7 @@
 
     <div class="list-group row">
       {% for chapter in chapters %}
-       <a class="list-group-item col-lg-4" id="chapterlink" href="/book/{{chapter.name}}?chapter={{chapter.id}}">{{chapter.name}}
+       <a class="list-group-item col-lg-4" id="chapterlink" href="{{url_for('book', novelname=novel.name, chapter=chapter.id)}}">{{chapter.name}}
        {% if chapter.bookmark%}<span class="badge">书签</span>{% endif %}</a>
       {% endfor %}
     </div>
