@@ -1,12 +1,5 @@
-#encoding:UTF-8
-#import re
-#import shutil
 import json
-import pickle
-import threading
-from urllib.parse import unquote
-from os import path,mkdir,remove,getenv
-from flask import request,jsonify,Flask,send_from_directory,render_template
+from flask import request, Flask,send_from_directory, render_template
 
 app = Flask(__name__)
 
@@ -20,6 +13,10 @@ def search():
 
 @app.route('/book/<novelname>')
 def book(novelname):
+    chapter = request.args.get('chapter',None)
+    if chapter:
+        #TODO: 从数据库读出小说章节信息
+        return render_template('chapter.html', novelname=None, chaptername=None, text=None)
     #TODO: 从数据库读出小说信息及章节信息
     return render_template('book.html', novel=None, chapters=None)
 

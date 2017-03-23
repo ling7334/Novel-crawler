@@ -1,79 +1,29 @@
-﻿<!DOCTYPE html>
-<html lang="zh-CN">
-
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>#novelname - #chaptername</title>
-
-  <!-- Bootstrap core CSS -->
-  <link href="/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Custom styles for this template -->
-  <link href="/css/custom_theme.css" rel="stylesheet">
-
-</head>
-
-<body role="document">
-
-  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="/">扒虫</a>
-      </div>
-
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav">
-          <li><a href="/">书柜<span class="glyphicon glyphicon-book"></span></a></li>
-          <li><a href="/search">搜书<span class="glyphicon glyphicon-search"></span></a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="/config"><span class="glyphicon glyphicon-cog"></span></a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <div class="container" id="resText">
+﻿{% extends "base.html" %}
+{% block title %}{{chaptername}}{% endblock %}
+{% block head %}{{ super() }}{% endblock %}
+{% block css %}{% endblock %}
+{% block javascript %}
+{% if continuously %}
+  <script src="{{url_for('static', filename='js/continuously.js')}}"></script>
+{% else %}
+  <script src="{{url_for('static', filename='js/pager.js')}}"></script>
+{% endif %}
+{% endblock %}
+{% block body %}
     <ul class="breadcrumb">
-      <li><a href="#NovelLink">#novelname</a></li>
-      <li class="active">#chaptername</li>
+      <li><a href="{{url_for('book', novelname=novelname)}}">{{novelname}}</a></li>
+      <li class="active">{{chaptername}}</li>
     </ul>
-
+  <div id="context">
     <div class="well well-lg center-block" id="text">
-      <h1 align="center">#chaptername</h1>
-      <p>#text</p>
+      <h1 align="center">{{chaptername}}</h1>
+      <p>{{text}}</p>
+{% if not continuously %}
       <ul class="pager">
-        <li class="previous"><a href="#previous">&larr; 上一章</a></li>
-        <li class="next"><a href="#next">下一章 &rarr;</a></li>
+        <li class="previous"><a href="{{url_for('book', novelname=novelname, chapter=chapterid-1)}}">&larr; 上一章</a></li>
+        <li class="next"><a href="{{url_for('book', novelname=novelname, chapter=chapterid+1)}}">下一章 &rarr;</a></li>
       </ul>
+{% endif %}
     </div>
   </div>
-  <div class="footer">
-    <hr>
-    <p align="center">免责声明:本软件内容皆来源于网络，软件作者不负任何责任。<a href="https://github.com/ling7334/Novel-crawler">@ling7334</a></p>
-    <div class="progress progress-striped active center-block" style="width:10%;">
-      <div class="progress-bar" style="width: 100%;"></div>
-    </div>
-  </div>
-
-  <!-- Placed at the end of the document so the pages load faster -->
-  <!-- Bootstrap core JavaScript
-    ================================================== -->
-  <script src="/js/jquery.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
-  <script>
-    var novelname = "#novelname";
-    var nextchapter = #chapter + 1;
-    var prevpage = "#previous";
-    var nextpage = "#next";
-    var novelpage = "#novelpage";
-  </script>
-  <script src="#script"></script>
-  <script src="/js/topcontrol.js"></script>
-
-</body>
-
-</html>
+{% endblock %}
