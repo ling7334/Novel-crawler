@@ -44,7 +44,7 @@
 
     <div class="list-group row">
       {% for chapter in chapters %}
-       <a class="list-group-item col-lg-4" id="chapterlink" href="{{chapter.link}}">{{chapter.name}}
+       <a class="list-group-item col-lg-4" id="chapterlink" href="book/{{chapter.name}}?chapter={{chapter.id}}/">{{chapter.name}}
        {% if chapter.bookmark%}<span class="badge">书签</span>{% endif %}</a>
       {% endfor %}
     </div>
