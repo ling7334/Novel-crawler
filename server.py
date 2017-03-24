@@ -14,10 +14,10 @@ def search():
 
 @app.route('/book/<novelname>')
 def book(novelname):
-    chapter = request.args.get('chapter',None)
+    chapter = request.args.get('chapter')
     if chapter:
         #TODO: 从数据库读出小说章节信息
-        return render_template('chapter.html', novelname=None, chaptername=None, text=None)
+        return render_template('chapter.html', novelname=novelname, chaptername=None, text=None)
     #TODO: 从数据库读出小说信息及章节信息
     return render_template('book.html', novel=None, chapters=None)
 
