@@ -13,8 +13,30 @@ def index():
     '''主页书架'''
     with postgresql_instance('novel') as con:
         with con, con.cursor() as cur:
-            pass
-    return render_template('bookcase.html', novellist=[])
+            cur.execute("""SELECT id,name,image FROM public.novel;""")
+            novels = cur.fetchall()
+            novellist = []
+            for novelid, name, image in novels:
+                length = cur.execute("""SELECT name,chapter FROM public.chapter WHERE bookmark=1 AND novelid=%s;""", (novelid,))
+                if length:
+                    lastread_name, lastread_chapter = cur.fetchone()
+                else:
+                    lastread_name, lastread_chapter = None, None
+                length = cur.execute("""SELECT name,chapter FROM public.chapter WHERE chapter=max(chapter) AND novelid=%s;""", (novelid,))
+                if length:
+                    latest_name, latest_chapter = cur.fetchone()
+                else:
+                    latest_name, latest_chapter = None, None
+                novellist.append({
+                    'name':name,
+                    'image':image,
+                    'lastread':{
+                        'id':lastread_chapter,
+                        'name':lastread_name},
+                    'latest':{
+                        'id':latest_chapter,
+                        'name':latest_name}})
+    return render_template('bookcase.html', novellist=novellist)
 
 
 @app.route('/search', methods=['GET'])
