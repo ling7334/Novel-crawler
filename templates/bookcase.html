@@ -15,12 +15,12 @@
         <div class="col-md-8">
             <p><a href="{{url_for('book', novelname=novel.name)}}"><strong>{{novel.name}}</strong></a></p>
             {% if novel.latest %}
-            <p  class="text-primary">最新章节：<a href="{{url_for('book', novelname=novel.name, chapter=chapter.id)}}">{{novel.latest.name}}</a></p>
+            <p  class="text-primary">最新章节：<a href="{{url_for('book', novelname=novel.name, chapter=novel.latest.id)}}">{{novel.latest.name}}</a></p>
             {% else %}
             <p  class="text-primary">最新章节：</p>
             {% endif %}
             {% if novel.lastread %}
-            <p  class="text-primary">最后阅读：<a href="{{url_for('book', novelname=novel.name, chapter=chapter.id)}}">{{novel.lastread.name}}</a></p>
+            <p  class="text-primary">最后阅读：<a href="{{url_for('book', novelname=novel.name, chapter=novel.lastread.id)}}">{{novel.lastread.name}}</a></p>
             {% else %}
             <p  class="text-primary">最后阅读：</p>
             {% endif %}
