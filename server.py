@@ -1,25 +1,42 @@
 import json
 from os import getenv
-from flask import request, Flask,send_from_directory, render_template
+from flask import request, Flask,send_from_directory, render_template, abort
+
+from database.connection import postgresql_instance
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-    return render_template('bookcase.html')
+    with postgresql_instance('novel') as con:
+        with con, con.cursor() as cur:
+            pass
+    return render_template('bookcase.html', novellist=[])
 
-@app.route('/search')
+@app.route('/search', methods=['GET'])
 def search():
     return render_template('search.html')
 
-@app.route('/book/<novelname>')
+@app.route('/book/<novelname>', methods=['GET'])
 def book(novelname):
     chapter = request.args.get('chapter')
+    print(chapter)
     if chapter:
-        #TODO: 从数据库读出小说章节信息
-        return render_template('chapter.html', novelname=novelname, chaptername=None, text=None)
-    #TODO: 从数据库读出小说信息及章节信息
-    return render_template('book.html', novel=None, chapters=None)
+        with postgresql_instance('novel') as con:
+            with con, con.cursor() as cur:
+                len = cur.execute("""SELECT public.chapter.name,content FROM public.chapter INNER JOIN public.novel ON novelid=public.novel.id WHERE public.novel.name = %s AND public.chapter.chapter = %s;""", (novelname, chapter))
+                if not len: abort(404)
+                chaptername, text = cur.fetchone()
+        return render_template('chapter.html', novelname=novelname, chaptername=chaptername, text=text)
+    with postgresql_instance('novel') as con:
+        with con, con.cursor() as cur:
+            len = cur.execute("""SELECT id,name,image,description,author,category,status,update_time,resource,resourcehref FROM public.novel WHERE name=%s;""", (novelname,))
+            if not len: abort(404)
+            novel = {}
+            novelid, novel['name'], novel['image'], novel['description'], novel['author'], novel['category'], novel['status'], novel['update'], novel['resource'], novel['resourcehref'] = cur.fetchone()
+            cur.execute("""SELECT chapter,name,bookmark FROM public.chapter WHERE novelid=%s;""", (novelid,))
+            chapters = map(lambda x: zip(('id', 'name', 'bookmark'), x), list(cur.fetchall()))
+    return render_template('book.html', novel=novel, chapters=chapters)
 
 @app.route('/favicon.ico')
 def ico():
@@ -34,4 +51,4 @@ def server_error(error):
 
 if __name__ == '__main__':
     PORT = int(getenv('PORT', 5000))
-    app.run(host='0.0.0.0',port=PORT, threaded=True, debug=False)
+    app.run(host='0.0.0.0',port=PORT, threaded=True, debug=True)
