@@ -68,7 +68,7 @@ def book(novelname):
             novel = {}
             novelid, novel['name'], novel['image'], novel['description'], novel['author'], novel['category'], novel['status'], novel['update'], novel['resource'], novel['resourcehref'] = cur.fetchone()
             cur.execute("""SELECT chapter,name,bookmark FROM public.chapter WHERE novelid=%s;""", (novelid,))
-            chapters = map(lambda x: zip(('id', 'name', 'bookmark'), x), list(cur.fetchall()))
+            chapters = [dict(zip(('id', 'name', 'bookmark'), x)) for x in cur.fetchall()]
     return render_template('book.html', novel=novel, chapters=chapters)
 
 
