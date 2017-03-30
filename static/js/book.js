@@ -3,7 +3,7 @@ function update(){
     $.ajax({
         type:'post',
         dataType:'json',
-        url:'/'+$("title").html(),
+        url:'/book/'+$("title").text(),
         //data: { "id": $("#resource").html() , "novelname": $("title").html(), "restrict":"1" },
         beforeSend:function(){loading+=1},
         complete:function(data){
@@ -26,12 +26,10 @@ function update(){
 
 function del(){
     if (loading>=0){return false}
-    var title = $("title").text();
     $.ajax({
-        type:'post',
+        type:'delete',
         dataType:'json',
-        url:'/del',
-        data: {"novelname": title},
+        url:'/book/'+$("title").text(),
         beforeSend:function(){loading+=1},
         complete:function(data){
             obj = data.responseText;

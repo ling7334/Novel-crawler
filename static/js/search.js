@@ -12,7 +12,7 @@ function Retrieve(id,novelname,restrict){
             obj = data.responseText;
             if (obj=='SUCCESS'){
                 loading -=1;
-                location = "/" + novelname;
+                location = "/book/" + novelname;
             }
             if (obj=='EXIST'){
                 $('#rewrite').attr("onclick","Retrieve('"+id+"','"+novelname+"','1')");
