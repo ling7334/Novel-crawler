@@ -1,7 +1,7 @@
 language: python
 branches:
   only:
-    - /.*/
+    - improve
 services:
   - mysql
   - redis-server
