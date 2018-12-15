@@ -51,3 +51,6 @@ HTML
 
 ## 许可证
 [MIT](LICENSE)
+
+## 赞助 - 别扫
+![support](/alipay.jpg)
